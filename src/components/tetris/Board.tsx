@@ -152,7 +152,7 @@ const Board = () => {
     }
   };
 
-  // 비교 해야할 인덱스 값 추출 TODO: bottomIndex
+  // 비교 해야할 인덱스 값 추출
   const getMaxMinIndex = (x: number, y: number) => {
     const currentBlock = getPositionBlock(x, y);
     let cells: number[] = [];
