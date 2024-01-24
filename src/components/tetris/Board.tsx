@@ -52,7 +52,6 @@ const Board = () => {
 
   const renderBoard = (position: number[], value: number[][]) => {
     console.log("보드 렌더링", board, position, value);
-    const newArray = [...board];
 
     console.log("newArray");
   };
