@@ -21,12 +21,7 @@ const Board = () => {
   const [currentBlockCells, setCurrentBlockCells] = useState<number[][]>([]);
 
   useEffect(() => {
-    const randomKey = randomBlock();
-
-    setBlock({
-      ...block,
-      type: randomKey as Block,
-    });
+    initBlock();
   }, []);
 
   useEffect(() => {
@@ -43,7 +38,6 @@ const Board = () => {
     };
   }, [block]);
 
-  console.log("현재 블럭의 좌표 값", currentBlockCells);
   const randomBlock = () => {
     const keys = Object.keys(BLOCKS);
 
@@ -60,7 +54,6 @@ const Board = () => {
     };
 
     if (e.key === "ArrowUp") {
-      // 회전
       const statusLength = BLOCKS[`${block.type}`].status.length;
       let index = block.blockIndex + 1;
 
@@ -93,8 +86,40 @@ const Board = () => {
         moveBlock(x, y + 1);
       } else {
         // 보드에 블럭 값 반영하고 + 블럭 재생성
+
+        const currentPosition: number[][] = getBlockPositions(block);
+
+        // 이 좌표값을 반영하자.
+        renderBoard(currentPosition, block.type);
+        initBlock();
       }
     }
+  };
+
+  const initBlock = () => {
+    let randomKey = randomBlock();
+
+    setBlock({
+      position: {
+        x: 3,
+        y: 0,
+      },
+      type: randomKey as Block,
+      blockIndex: 0,
+    });
+  };
+
+  const renderBoard = (current: number[][], blockType: Block) => {
+    const newBoard = board.map((row) => [...row]);
+
+    for (let pos of current) {
+      const posY = pos[0];
+      const posX = pos[1];
+
+      newBoard[posY][posX] = getBlockValue(blockType);
+    }
+
+    setBoard(newBoard);
   };
 
   const moveBlock = (x: number, y: number) => {
