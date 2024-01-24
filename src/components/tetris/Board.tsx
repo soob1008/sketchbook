@@ -4,44 +4,37 @@ import { Block, BLOCKS, BoardIndex, Position, tetrisData } from "./util";
 
 interface BlockStatus {
   position: Position;
-  category: Block;
+  type: Block;
   blockIndex: number;
 }
 
 const Board = () => {
   const [board, setBoard] = useState(tetrisData);
-
   const [block, setBlock] = useState<BlockStatus>({
     position: {
       x: 3,
       y: 0,
     },
-    category: "I",
+    type: "I",
     blockIndex: 0,
   });
+  const [currentBlockCells, setCurrentBlockCells] = useState<number[][]>([]);
 
   useEffect(() => {
     const randomKey = randomBlock();
 
     setBlock({
       ...block,
-      category: randomKey as Block,
+      type: randomKey as Block,
     });
   }, []);
 
   useEffect(() => {
     if (!block) return;
 
-    renderBoard(
-      [6, 2],
-      [
-        [1, 1, 1, 1],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-        [0, 0, 0, 0],
-      ],
-    );
-    renderBlock(block);
+    // 현재 블럭의 좌표 값
+    const cellPosition = getBlockPositions(block);
+    setCurrentBlockCells(cellPosition);
 
     window.addEventListener("keydown", handleKeyDown);
     // 언마운트되었을 때 이벤트 제거
@@ -50,37 +43,7 @@ const Board = () => {
     };
   }, [block]);
 
-  const renderBoard = (position: number[], value: number[][]) => {
-    console.log("보드 렌더링", board, position, value);
-
-    console.log("newArray");
-  };
-
-  const renderBlock = (block: BlockStatus) => {
-    const { position, category, blockIndex } = block;
-    const { x, y } = position;
-
-    const currentBlock = BLOCKS[`${category}`].status[`${blockIndex}`];
-
-    const cells = board.map((row: number[], index) => {
-      if (
-        index >= y &&
-        index <= y + 3 &&
-        typeof currentBlock[index] === "object"
-      ) {
-        // console.log("render", position, row, "cell", currentBlock);
-        // row.splice(
-        //   x,
-        //   currentBlock.length,
-        //   ...(currentBlock[index] as number[]),
-        // );
-      }
-      return row;
-    });
-
-    setBoard(cells);
-  };
-
+  console.log("현재 블럭의 좌표 값", currentBlockCells);
   const randomBlock = () => {
     const keys = Object.keys(BLOCKS);
 
@@ -89,117 +52,119 @@ const Board = () => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     if (!block) return;
-    const { position } = block;
+    const { position, type, blockIndex } = block;
     const { x, y } = position;
+    const blockType = {
+      type,
+      blockIndex,
+    };
 
-    // k.key = ArrowLeft | ArrowRight | ArrowUp | ArrowDown
     if (e.key === "ArrowUp") {
       // 회전
-      const statusLength = BLOCKS[`${block.category}`].status.length;
+      const statusLength = BLOCKS[`${block.type}`].status.length;
       let index = block.blockIndex + 1;
 
       if (index >= statusLength) {
         index = 0;
       }
 
-      setBlock({
-        ...block,
-        blockIndex: index,
-      });
+      if (
+        checkCells(x, y, {
+          type: type,
+          blockIndex: index,
+        })
+      ) {
+        setBlock({
+          ...block,
+          blockIndex: index,
+        });
+      }
     } else if (e.key === "ArrowLeft") {
-      // 왼쪽 이동
+      if (checkCells(x - 1, y, blockType)) {
+        moveBlock(x - 1, y);
+      }
     } else if (e.key === "ArrowRight") {
-      // 오른쪽 이동
-
-      if (checkCellValue({ key: e.key, position })) {
-      } else {
-        console.log("오른쪽 이동 안함");
+      if (checkCells(x + 1, y, blockType)) {
+        moveBlock(x + 1, y);
       }
     } else if (e.key === "ArrowDown") {
+      // 아래로 내릴 때
+      if (checkCells(x, y + 1, blockType)) {
+        moveBlock(x, y + 1);
+      } else {
+        // 보드에 블럭 값 반영하고 + 블럭 재생성
+      }
     }
   };
 
-  // 마지막 cell 검사하는 함수
-  const checkCellValue = ({
-    key,
-    position,
-  }: {
-    key: string;
-    position: Position;
-  }) => {
-    const { x, y } = position;
-    const currentBlock = getPositionBlock(x, y);
-
-    if (key === "ArrowRight") {
-      const compareBlock = getPositionBlock(x + 3, y);
-      // 맨 마지막 블록 값
-      const lastCurrentBlock = changeRowCell(currentBlock)[3];
-      const firstCompareBlock = changeRowCell(compareBlock)[0];
-      // console.log("현재 마지막 cell 값", currentBlock);
-      // console.log("다음 블럭의 첫번쨰 cell 값", compareBlock);
-      // 두개의 값 비교
-      lastCurrentBlock.forEach((current) => {
-        firstCompareBlock.forEach((next) => {
-          if (current !== 0 && next !== 0) {
-            return false;
-          }
-        });
-      });
-
-      return true;
-    }
+  const moveBlock = (x: number, y: number) => {
+    setBlock({
+      ...block,
+      position: { x, y },
+    });
   };
 
-  // 비교 해야할 인덱스 값 추출
-  const getMaxMinIndex = (x: number, y: number) => {
-    const currentBlock = getPositionBlock(x, y);
-    let cells: number[] = [];
-    let maxCellIndex: BoardIndex = { rowIndex: -1, cellIndex: -1 };
-    let minCellIndex: BoardIndex = { rowIndex: -1, cellIndex: -1 };
+  // 블럭 cell 체크 하는 함수
+  const checkCells = (
+    x: number,
+    y: number,
+    blockType: {
+      type: Block;
+      blockIndex: number;
+    },
+  ) => {
+    const checkBlock = {
+      position: { x, y },
+      type: blockType.type,
+      blockIndex: blockType.blockIndex,
+    };
 
-    currentBlock.map((row, rowIndex) => {
-      let cellsIndex: number[] = [];
+    const nextBlockPositions: number[][] = getBlockPositions(checkBlock);
 
+    for (let pos of nextBlockPositions) {
+      const posX = pos[1];
+      const posY = pos[0];
+
+      // 벽막기
+      if (posX < 0 || posX > 9) {
+        return false;
+      }
+
+      if (posY < 0 || posY > 19) {
+        return false;
+      }
+
+      if (board[posY][posX] !== 0) {
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // 4x4 중에 0이 아닌 cell의 좌표를 리턴하는 함수 [y, x]
+  const getBlockPositions = (block: BlockStatus) => {
+    const { type, blockIndex } = block;
+    const { x, y } = block.position;
+    const currentBlock = BLOCKS[`${type}`].status[`${blockIndex}`];
+
+    let existBlocks: number[][] = [];
+
+    currentBlock.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
-        if (cell) {
-          cellsIndex.push(cellIndex);
-          if (cellIndex > maxCellIndex.cellIndex) {
-            maxCellIndex = { rowIndex, cellIndex };
-          }
-
-          if (
-            minCellIndex.cellIndex === -1 ||
-            cellIndex < minCellIndex.cellIndex
-          ) {
-            minCellIndex = { rowIndex, cellIndex };
-          }
+        if (cell !== 0) {
+          existBlocks.push([rowIndex + y, cellIndex + x]);
         }
       });
-
-      if (cellsIndex.length > 0) {
-        cells.push(...cellsIndex);
-      }
     });
 
-    const maxXIndex = maxCellIndex.cellIndex;
-    const maxYIndex = maxCellIndex.rowIndex;
-    const minXIndex = minCellIndex.cellIndex;
-    const minYIndex = minCellIndex.rowIndex;
-
-    return {
-      rightIndex: {
-        x: maxXIndex,
-        y: maxYIndex,
-      },
-      leftIndex: {
-        x: minXIndex,
-        y: minYIndex,
-      },
-    };
+    return existBlocks;
   };
 
+  //좌표값을 넣으면 현재 블록의 존재하는 상대좌표 값을 리턴
+
   // x,y 좌표 입력하면 4x4 값 추출
-  const getPositionBlock = (x: number, y: number) => {
+  const getBlocks = (x: number, y: number) => {
     let blockRow = [] as number[][];
     board.forEach((row, rowIndex) => {
       if (y <= rowIndex && y + 3 >= rowIndex) {
@@ -207,9 +172,10 @@ const Board = () => {
 
         row.forEach((cell, cellIndex) => {
           if (x <= cellIndex && x + 3 >= cellIndex) {
-            blockCell.push(cell);
+            blockCell.push(board[y + rowIndex][x + cellIndex]);
           }
         });
+
         blockRow.push(blockCell);
       }
     });
@@ -229,21 +195,51 @@ const Board = () => {
 
     return blockArr;
   };
+
+  const getBlockValue = (type: Block) => {
+    switch (type) {
+      case "I":
+        return 1;
+      case "L":
+        return 2;
+      case "J":
+        return 3;
+      case "T":
+        return 4;
+      case "O":
+        return 5;
+      case "S":
+        return 6;
+      case "Z":
+        return 7;
+      default:
+        return 0;
+    }
+  };
+
   return (
     <BoardWrapper>
       <div className="inner">
         {board?.map((row, rowIndex) => (
           <Row key={`board-row-${rowIndex}`}>
             {row.map((boardCell, colIndex) => {
-              // const blockCells = getBlockPositions();
               // const cell = blockCells.find(
               //   (it) => it.x === colIndex && it.y === rowIndex,
               // )
               //   ? block.category
               //   : board[colIndex][rowIndex];
+
+              const isBlock = currentBlockCells.find(
+                (it) => it[0] === rowIndex && it[1] === colIndex,
+              );
+              const boardValue = isBlock
+                ? getBlockValue(block.type)
+                : board[rowIndex][colIndex];
+
               return (
-                <Cell key={`board-cell-${colIndex}`} number={boardCell}>
-                  {/*{cell}*/}
+                <Cell key={`board-cell-${colIndex}`} number={boardValue}>
+                  {boardValue}
+                  {isBlock ? "b" : "x"}
                 </Cell>
               );
             })}
