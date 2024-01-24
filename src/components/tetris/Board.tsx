@@ -9,7 +9,6 @@ interface BlockStatus {
 }
 
 const Board = () => {
-  // 좌표값, 블록종류, 블럭상태(index)
   const [board, setBoard] = useState(tetrisData);
 
   const [block, setBlock] = useState<BlockStatus>({
