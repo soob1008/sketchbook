@@ -4,6 +4,11 @@ export interface BoardIndex {
   cellIndex: number;
 }
 
+export type Position = {
+  x: number;
+  y: number;
+};
+
 export const tetrisData = [
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
   [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0],
@@ -55,7 +60,26 @@ export const tetrisElement: number[][][] = [
   ],
 ];
 
-// 블럭 정의
+// 블럭 정의 - 상대 좌표 정의하는 법
+export const NEW_BLOCKS = {
+  I: {
+    status: [
+      [
+        { x: 0, y: 1 },
+        { x: 1, y: 1 },
+        { x: 2, y: 1 },
+        { x: 3, y: 1 },
+      ],
+      [
+        { x: 1, y: 0 },
+        { x: 1, y: 1 },
+        { x: 1, y: 2 },
+        { x: 1, y: 3 },
+      ],
+    ],
+  },
+};
+
 export const BLOCKS = {
   I: {
     status: [

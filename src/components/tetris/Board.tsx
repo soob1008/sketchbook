@@ -1,21 +1,22 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { Block, BLOCKS, BoardIndex, tetrisData } from "./util";
+import { Block, BLOCKS, BoardIndex, Position, tetrisData } from "./util";
 
 interface BlockStatus {
-  position: number[];
+  position: Position;
   category: Block;
   blockIndex: number;
 }
 
 const Board = () => {
-  // const initRow = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-  // const [tetrisRow, setTetrisRow] = useState<Array<number[]>>();
   // 좌표값, 블록종류, 블럭상태(index)
   const [board, setBoard] = useState(tetrisData);
 
   const [block, setBlock] = useState<BlockStatus>({
-    position: [3, 0],
+    position: {
+      x: 3,
+      y: 0,
+    },
     category: "I",
     blockIndex: 0,
   });
@@ -59,8 +60,7 @@ const Board = () => {
 
   const renderBlock = (block: BlockStatus) => {
     const { position, category, blockIndex } = block;
-    const x = position[0];
-    const y = position[1];
+    const { x, y } = position;
 
     const currentBlock = BLOCKS[`${category}`].status[`${blockIndex}`];
 
@@ -92,8 +92,7 @@ const Board = () => {
   const handleKeyDown = (e: KeyboardEvent) => {
     if (!block) return;
     const { position } = block;
-    const x = position[0];
-    const y = position[1];
+    const { x, y } = position;
 
     // k.key = ArrowLeft | ArrowRight | ArrowUp | ArrowDown
     if (e.key === "ArrowUp") {
@@ -128,12 +127,13 @@ const Board = () => {
     position,
   }: {
     key: string;
-    position: number[];
+    position: Position;
   }) => {
-    const currentBlock = getPositionBlock(position[0], position[1]);
+    const { x, y } = position;
+    const currentBlock = getPositionBlock(x, y);
 
     if (key === "ArrowRight") {
-      const compareBlock = getPositionBlock(position[0] + 3, position[1]);
+      const compareBlock = getPositionBlock(x + 3, y);
       // 맨 마지막 블록 값
       const lastCurrentBlock = changeRowCell(currentBlock)[3];
       const firstCompareBlock = changeRowCell(compareBlock)[0];
@@ -231,17 +231,24 @@ const Board = () => {
 
     return blockArr;
   };
-
   return (
     <BoardWrapper>
       <div className="inner">
-        {board?.map((row, index) => (
-          <Row key={`tetris-row-${index}`}>
-            {row.map((cell, i) => (
-              <Cell key={`tetris-cell-${i}`} number={cell}>
-                {cell}
-              </Cell>
-            ))}
+        {board?.map((row, rowIndex) => (
+          <Row key={`board-row-${rowIndex}`}>
+            {row.map((boardCell, colIndex) => {
+              // const blockCells = getBlockPositions();
+              // const cell = blockCells.find(
+              //   (it) => it.x === colIndex && it.y === rowIndex,
+              // )
+              //   ? block.category
+              //   : board[colIndex][rowIndex];
+              return (
+                <Cell key={`board-cell-${colIndex}`} number={boardCell}>
+                  {/*{cell}*/}
+                </Cell>
+              );
+            })}
           </Row>
         ))}
       </div>
