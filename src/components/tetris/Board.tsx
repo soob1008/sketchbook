@@ -1,245 +1,140 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { Block, BLOCKS, BoardIndex, Position, tetrisData } from "./util";
+import { BlockType, BLOCKS, Position } from "./util";
 
 interface BlockStatus {
   position: Position;
-  type: Block;
+  blockType: BlockType;
   blockIndex: number;
 }
 
-const Board = () => {
-  const [board, setBoard] = useState(tetrisData);
-  const [block, setBlock] = useState<BlockStatus>({
+const initArray = Array.from({ length: 20 }, () => Array(10).fill(null));
+
+const initBlock = (): BlockStatus => {
+  const keys = Object.keys(BLOCKS);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+  return {
     position: {
       x: 3,
       y: 0,
     },
-    type: "I",
+    blockType: randomKey as BlockType,
     blockIndex: 0,
-  });
-  const [currentBlockCells, setCurrentBlockCells] = useState<number[][]>([]);
+  };
+};
+
+const Board = () => {
+  const [board, setBoard] = useState<BlockType[][]>(initArray);
+  const [block, setBlock] = useState<BlockStatus>(initBlock());
 
   useEffect(() => {
-    initBlock();
-  }, []);
-
-  useEffect(() => {
-    if (!block) return;
-
-    // 현재 블럭의 좌표 값
-    const cellPosition = getBlockPositions(block);
-    setCurrentBlockCells(cellPosition);
-
     window.addEventListener("keydown", handleKeyDown);
-    // 언마운트되었을 때 이벤트 제거
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
-  }, [block]);
-
-  const randomBlock = () => {
-    const keys = Object.keys(BLOCKS);
-
-    return keys[Math.floor(Math.random() * keys.length)];
-  };
-
-  const handleKeyDown = (e: KeyboardEvent) => {
-    if (!block) return;
-    const { position, type, blockIndex } = block;
-    const { x, y } = position;
-    const blockType = {
-      type,
-      blockIndex,
-    };
-
-    if (e.key === "ArrowUp") {
-      const statusLength = BLOCKS[`${block.type}`].status.length;
-      let index = block.blockIndex + 1;
-
-      if (index >= statusLength) {
-        index = 0;
-      }
-
-      if (
-        checkCells(x, y, {
-          type: type,
-          blockIndex: index,
-        })
-      ) {
-        setBlock({
-          ...block,
-          blockIndex: index,
-        });
-      }
-    } else if (e.key === "ArrowLeft") {
-      if (checkCells(x - 1, y, blockType)) {
-        moveBlock(x - 1, y);
-      }
-    } else if (e.key === "ArrowRight") {
-      if (checkCells(x + 1, y, blockType)) {
-        moveBlock(x + 1, y);
-      }
-    } else if (e.key === "ArrowDown") {
-      // 아래로 내릴 때
-      if (checkCells(x, y + 1, blockType)) {
-        moveBlock(x, y + 1);
-      } else {
-        // 보드에 블럭 값 반영하고 + 블럭 재생성
-
-        const currentPosition: number[][] = getBlockPositions(block);
-
-        // 이 좌표값을 반영하자.
-        renderBoard(currentPosition, block.type);
-        initBlock();
-      }
-    }
-  };
-
-  const initBlock = () => {
-    let randomKey = randomBlock();
-
-    setBlock({
-      position: {
-        x: 3,
-        y: 0,
-      },
-      type: randomKey as Block,
-      blockIndex: 0,
-    });
-  };
-
-  const renderBoard = (current: number[][], blockType: Block) => {
-    const newBoard = board.map((row) => [...row]);
-
-    for (let pos of current) {
-      const posY = pos[0];
-      const posX = pos[1];
-
-      newBoard[posY][posX] = getBlockValue(blockType);
-    }
-
-    setBoard(newBoard);
-  };
-
-  const moveBlock = (x: number, y: number) => {
-    setBlock({
-      ...block,
-      position: { x, y },
-    });
-  };
-
-  // 블럭 cell 체크 하는 함수
-  const checkCells = (
-    x: number,
-    y: number,
-    blockType: {
-      type: Block;
-      blockIndex: number;
-    },
-  ) => {
-    const checkBlock = {
-      position: { x, y },
-      type: blockType.type,
-      blockIndex: blockType.blockIndex,
-    };
-
-    const nextBlockPositions: number[][] = getBlockPositions(checkBlock);
-
-    for (let pos of nextBlockPositions) {
-      const posX = pos[1];
-      const posY = pos[0];
-
-      // 벽막기
-      if (posX < 0 || posX > 9) {
-        return false;
-      }
-
-      if (posY < 0 || posY > 19) {
-        return false;
-      }
-
-      if (board[posY][posX] !== 0) {
-        return false;
-      }
-    }
-
-    return true;
-  };
+  });
 
   // 4x4 중에 0이 아닌 cell의 좌표를 리턴하는 함수 [y, x]
-  const getBlockPositions = (block: BlockStatus) => {
-    const { type, blockIndex } = block;
-    const { x, y } = block.position;
-    const currentBlock = BLOCKS[`${type}`].status[`${blockIndex}`];
-
-    let existBlocks: number[][] = [];
-
-    currentBlock.forEach((row, rowIndex) => {
+  const getBlockPositions = (
+    blockKey: BlockType,
+    statusIndex: number,
+  ): Position[] => {
+    const status: number[][] = BLOCKS[`${blockKey}`].status[statusIndex];
+    let positions = Array<Position>();
+    status.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
         if (cell !== 0) {
-          existBlocks.push([rowIndex + y, cellIndex + x]);
+          positions.push({
+            x: cellIndex,
+            y: rowIndex,
+          });
         }
       });
     });
 
-    return existBlocks;
+    return positions;
   };
 
-  //좌표값을 넣으면 현재 블록의 존재하는 상대좌표 값을 리턴
+  const handleKeyDown = (e: KeyboardEvent) => {
+    const { position, blockType, blockIndex } = block;
+    const { x, y } = position;
 
-  // x,y 좌표 입력하면 4x4 값 추출
-  const getBlocks = (x: number, y: number) => {
-    let blockRow = [] as number[][];
-    board.forEach((row, rowIndex) => {
-      if (y <= rowIndex && y + 3 >= rowIndex) {
-        let blockCell = [] as number[];
+    if (e.key === "ArrowUp") {
+      const nextStatusIndex =
+        (block.blockIndex + 1) % BLOCKS[`${block.blockType}`].status.length;
 
-        row.forEach((cell, cellIndex) => {
-          if (x <= cellIndex && x + 3 >= cellIndex) {
-            blockCell.push(board[y + rowIndex][x + cellIndex]);
-          }
-        });
-
-        blockRow.push(blockCell);
+      if (checkCells(x, y, getBlockPositions(blockType, nextStatusIndex))) {
+        setBlock((prevBlock) => ({
+          ...prevBlock,
+          blockIndex: nextStatusIndex,
+        }));
       }
-    });
-
-    return blockRow;
-  };
-
-  const changeRowCell = (block: number[][]) => {
-    let blockArr: number[][] = [];
-    block.forEach((row, rowIndex) => {
-      const rowArr = row.map((cell, cellIndex) => {
-        return block[cellIndex][rowIndex];
-      });
-
-      blockArr.push(rowArr);
-    });
-
-    return blockArr;
-  };
-
-  const getBlockValue = (type: Block) => {
-    switch (type) {
-      case "I":
-        return 1;
-      case "L":
-        return 2;
-      case "J":
-        return 3;
-      case "T":
-        return 4;
-      case "O":
-        return 5;
-      case "S":
-        return 6;
-      case "Z":
-        return 7;
-      default:
-        return 0;
+    } else if (e.key === "ArrowLeft") {
+      if (checkCells(x - 1, y, getBlockPositions(blockType, blockIndex))) {
+        moveBlock(x - 1, y);
+      }
+    } else if (e.key === "ArrowRight") {
+      if (checkCells(x + 1, y, getBlockPositions(blockType, blockIndex))) {
+        moveBlock(x + 1, y);
+      }
+    } else if (e.key === "ArrowDown") {
+      if (checkCells(x, y + 1, getBlockPositions(blockType, blockIndex))) {
+        moveBlock(x, y + 1);
+      } else {
+        // 보드에 블럭 값 반영하고 + 블럭 재생성
+        fixToBoard(x, y, blockType, getBlockPositions(blockType, blockIndex));
+        setBlock(initBlock());
+      }
     }
+  };
+
+  const fixToBoard = (
+    x: number,
+    y: number,
+    type: BlockType,
+    positions: Position[],
+  ) => {
+    const newBoard = board.map((row) => [...row]);
+
+    for (let position of positions) {
+      const { x: posX, y: posY } = position;
+      newBoard[y + posY][x + posX] = type;
+    }
+    setBoard(newBoard);
+  };
+
+  const moveBlock = (x: number, y: number) => {
+    setBlock((prevBlock) => ({
+      ...prevBlock,
+      position: { x, y },
+    }));
+  };
+
+  // 블럭 cell 체크 - 블럭 이동 가능 여부 검사
+  const checkCells = (
+    blockX: number,
+    blockY: number,
+    positions: Position[],
+  ) => {
+    for (let position of positions) {
+      const { x: posX, y: posY } = position;
+
+      // 벽막기
+      if (blockX + posX < 0 || blockX + posX >= 10) {
+        return false;
+      }
+
+      if (blockY + posY < 0 || blockY + posY >= 20) {
+        return false;
+      }
+
+      // 보드에 블럭이 있을 경우 막기
+      if (board[blockY + posY][blockX + posX]) {
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
@@ -248,21 +143,23 @@ const Board = () => {
         {board?.map((row, rowIndex) => (
           <Row key={`board-row-${rowIndex}`}>
             {row.map((boardCell, colIndex) => {
-              // const cell = blockCells.find(
-              //   (it) => it.x === colIndex && it.y === rowIndex,
-              // )
-              //   ? block.category
-              //   : board[colIndex][rowIndex];
+              const positions = getBlockPositions(
+                block.blockType,
+                block.blockIndex,
+              ).map((it) => ({
+                x: it.x + block.position.x,
+                y: it.y + block.position.y,
+              }));
 
-              const isBlock = currentBlockCells.find(
-                (it) => it[0] === rowIndex && it[1] === colIndex,
+              const isBlock = positions.find(
+                (it) => it.y === rowIndex && it.x === colIndex,
               );
               const boardValue = isBlock
-                ? getBlockValue(block.type)
+                ? block.blockType
                 : board[rowIndex][colIndex];
 
               return (
-                <Cell key={`board-cell-${colIndex}`} number={boardValue}>
+                <Cell key={`board-cell-${colIndex}`} blockType={boardValue}>
                   {boardValue}
                   {isBlock ? "b" : "x"}
                 </Cell>
@@ -284,10 +181,7 @@ const BoardWrapper = styled.div(() => ({}), {
   transform: "translate(-50%, -50%)",
   border: "1px solid #000",
   width: "350px",
-  //overflow: "hidden",
   ".inner": {
-    // position: "relative",
-    // left: "-35px",
     width: "380px",
   },
 });
@@ -298,32 +192,12 @@ const Row = styled.div(() => ({
   alignItems: "center",
 }));
 
-const getBackgroundColor = (number: number) => {
-  switch (number) {
-    case 1:
-      return "#ff5858";
-    case 2:
-      return "#3f5aed";
-    case 3:
-      return "orange";
-    case 4:
-      return "#bc12cc";
-    case 5:
-      return "yellow";
-    case 6:
-      return "skyblue";
-    case 7:
-      return "#15dd15";
-    default:
-      return "transparent";
-  }
-};
-const Cell = styled.div<{ number: number }>(({ number }) => ({
+const Cell = styled.div<{ blockType: BlockType }>(({ blockType }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
   width: "35px",
   height: "35px",
-  backgroundColor: getBackgroundColor(number),
+  backgroundColor: blockType ? BLOCKS[`${blockType}`].color : "white",
   fontSize: "12px",
 }));
