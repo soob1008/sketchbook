@@ -35,7 +35,7 @@ const Board = () => {
     };
   });
 
-  // 4x4 중에 null 이 아닌 cell의 좌표를 리턴하는 함수 [y, x]
+  // 4x4 중에 null 이 아닌 cell 상대좌표를 리턴하는 함수
   const getBlockPositions = (
     blockKey: BlockType,
     statusIndex: number,
@@ -58,35 +58,127 @@ const Board = () => {
 
   const handleKeyDown = (e: KeyboardEvent) => {
     const { position, blockType, blockIndex } = block;
-    const { x, y } = position;
+    const { x: boardX, y: boardY } = position;
 
     if (e.key === "ArrowUp") {
       const nextStatusIndex =
         (block.blockIndex + 1) % BLOCKS[`${block.blockType}`].status.length;
 
-      if (checkCells(x, y, getBlockPositions(blockType, nextStatusIndex))) {
+      if (
+        checkCells(
+          boardX,
+          boardY,
+          getBlockPositions(blockType, nextStatusIndex),
+        )
+      ) {
         setBlock((prevBlock) => ({
           ...prevBlock,
           blockIndex: nextStatusIndex,
         }));
       }
     } else if (e.key === "ArrowLeft") {
-      if (checkCells(x - 1, y, getBlockPositions(blockType, blockIndex))) {
-        moveBlock(x - 1, y);
+      if (
+        checkCells(boardX - 1, boardY, getBlockPositions(blockType, blockIndex))
+      ) {
+        moveBlock(boardX - 1, boardY);
       }
     } else if (e.key === "ArrowRight") {
-      if (checkCells(x + 1, y, getBlockPositions(blockType, blockIndex))) {
-        moveBlock(x + 1, y);
+      if (
+        checkCells(boardX + 1, boardY, getBlockPositions(blockType, blockIndex))
+      ) {
+        moveBlock(boardX + 1, boardY);
       }
     } else if (e.key === "ArrowDown") {
-      if (checkCells(x, y + 1, getBlockPositions(blockType, blockIndex))) {
-        moveBlock(x, y + 1);
+      if (
+        checkCells(boardX, boardY + 1, getBlockPositions(blockType, blockIndex))
+      ) {
+        moveBlock(boardX, boardY + 1);
       } else {
-        // 보드에 블럭 값 반영하고 + 블럭 재생성
-        fixToBoard(x, y, blockType, getBlockPositions(blockType, blockIndex));
+        fixToBoard(
+          boardX,
+          boardY,
+          blockType,
+          getBlockPositions(blockType, blockIndex),
+        );
+        removeBoardLine(
+          boardX,
+          boardY,
+          blockType,
+          getBlockPositions(blockType, blockIndex),
+        );
+
         setBlock(initBlock());
       }
+    } else if (e.code === "Space") {
+      for (let i = 0; i < board.length - boardY; i++) {
+        let movePosY = boardY + i;
+
+        if (
+          !checkCells(
+            boardX,
+            movePosY,
+            getBlockPositions(blockType, blockIndex),
+          )
+        ) {
+          // movePosY가 이동할 수 없으면 이전 위치까지만 이동 시킨다.
+          moveBlock(boardX, movePosY - 1);
+          removeBoardLine(
+            boardX,
+            movePosY - 1,
+            blockType,
+            getBlockPositions(blockType, blockIndex),
+          );
+
+          setBlock(initBlock());
+          return false;
+        }
+      }
     }
+  };
+
+  // 라인 삭제하고 그 위에 있는 보드의 값을 아래에 반영해준다.
+  const removeBoardLine = (
+    boardX: number,
+    boardY: number,
+    blockType: BlockType,
+    positions: Position[],
+  ) => {
+    //
+    const newBoard = board.map((row) => [...row]);
+
+    let currentBoardY: number[] = [];
+
+    for (let position of positions) {
+      const { x: blockX, y: blockY } = position;
+
+      // board 에는 블럭의 값이 반영이 안되어있어서 현재 블럭 값 넣어줌. - fixToBoard 랑 겹치나?
+      newBoard[boardY + blockY][boardX + blockX] = blockType;
+
+      if (!currentBoardY.includes(boardY + blockY)) {
+        currentBoardY.push(boardY + blockY);
+      }
+    }
+
+    // 삭제 해야될 Y 값 추출
+    const removeBoardY = currentBoardY.filter((posY) =>
+      newBoard[posY].every((type) => type !== null),
+    );
+
+    const removeBoardLength = removeBoardY.length;
+
+    if (removeBoardLength > 0) {
+      const maxRemoveBoardY = Math.max(...removeBoardY);
+
+      for (let posY = maxRemoveBoardY; posY >= 0; posY--) {
+        newBoard[posY] = newBoard[posY - removeBoardLength];
+
+        if (!newBoard[posY]) {
+          newBoard[posY] = new Array(10).fill(null);
+        }
+      }
+    }
+
+    setBoard(newBoard);
   };
 
   const fixToBoard = (
@@ -98,8 +190,8 @@ const Board = () => {
     const newBoard = board.map((row) => [...row]);
 
     for (let position of positions) {
-      const { x: posX, y: posY } = position;
-      newBoard[y + posY][x + posX] = type;
+      const { x: blockX, y: blockY } = position;
+      newBoard[y + blockY][x + blockX] = type;
     }
     setBoard(newBoard);
   };
@@ -113,24 +205,24 @@ const Board = () => {
 
   // 블럭 cell 체크 - 블럭 이동 가능 여부 검사
   const checkCells = (
-    blockX: number,
-    blockY: number,
+    boardX: number,
+    boardY: number,
     positions: Position[],
   ) => {
     for (let position of positions) {
-      const { x: posX, y: posY } = position;
+      const { x: blockX, y: blockY } = position;
 
-      // 벽막기
-      if (blockX + posX < 0 || blockX + posX >= 10) {
+      // 벽막기 - boardX + blockX = x의 절대좌표
+      if (boardX + blockX < 0 || boardX + blockX >= 10) {
         return false;
       }
 
-      if (blockY + posY < 0 || blockY + posY >= 20) {
+      if (boardY + blockY < 0 || boardY + blockY >= 20) {
         return false;
       }
 
       // 보드에 블럭이 있을 경우 막기
-      if (board[blockY + posY][blockX + posX]) {
+      if (board[boardY + blockY][boardX + blockX]) {
         return false;
       }
     }
