@@ -94,26 +94,57 @@ const Board = () => {
       ) {
         moveBlock(boardX, boardY + 1);
       } else {
-        // 보드에 블럭 값 반영하고 + 블럭 재생성
         fixToBoard(
           boardX,
           boardY,
           blockType,
           getBlockPositions(blockType, blockIndex),
         );
-        // 다 찬 라인 삭제
-        removeBoardLine(blockType, getBlockPositions(blockType, blockIndex));
+        removeBoardLine(
+          boardX,
+          boardY,
+          blockType,
+          getBlockPositions(blockType, blockIndex),
+        );
+
         setBlock(initBlock());
+      }
+    } else if (e.code === "Space") {
+      for (let i = 0; i < board.length - boardY; i++) {
+        let movePosY = boardY + i;
+
+        if (
+          !checkCells(
+            boardX,
+            movePosY,
+            getBlockPositions(blockType, blockIndex),
+          )
+        ) {
+          // movePosY가 이동할 수 없으면 이전 위치까지만 이동 시킨다.
+          moveBlock(boardX, movePosY - 1);
+          removeBoardLine(
+            boardX,
+            movePosY - 1,
+            blockType,
+            getBlockPositions(blockType, blockIndex),
+          );
+
+          setBlock(initBlock());
+          return false;
+        }
       }
     }
   };
 
   // 라인 삭제하고 그 위에 있는 보드의 값을 아래에 반영해준다.
-  const removeBoardLine = (blockType: BlockType, positions: Position[]) => {
+  const removeBoardLine = (
+    boardX: number,
+    boardY: number,
+    blockType: BlockType,
+    positions: Position[],
+  ) => {
     //
     const newBoard = board.map((row) => [...row]);
-
-    const { x: boardX, y: boardY } = block.position;
 
     let currentBoardY: number[] = [];
 
