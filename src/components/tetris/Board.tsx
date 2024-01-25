@@ -35,7 +35,7 @@ const Board = () => {
     };
   });
 
-  // 4x4 중에 0이 아닌 cell의 좌표를 리턴하는 함수 [y, x]
+  // 4x4 중에 null 이 아닌 cell의 좌표를 리턴하는 함수 [y, x]
   const getBlockPositions = (
     blockKey: BlockType,
     statusIndex: number,
