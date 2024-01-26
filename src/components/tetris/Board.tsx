@@ -1,32 +1,14 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { BlockType, BLOCKS, Position } from "./util";
-
-interface BlockStatus {
-  position: Position;
-  blockType: BlockType;
-  blockIndex: number;
-}
+import { BlockType, BLOCKS, Position, BlockStatus, createBlock } from "./util";
 
 const initArray = Array.from({ length: 20 }, () => Array(10).fill(null));
 
-const initBlock = (): BlockStatus => {
-  const keys = Object.keys(BLOCKS);
-  const randomKey = keys[Math.floor(Math.random() * keys.length)];
-
-  return {
-    position: {
-      x: 3,
-      y: 0,
-    },
-    blockType: randomKey as BlockType,
-    blockIndex: 0,
-  };
-};
-
 const Board = () => {
   const [board, setBoard] = useState<BlockType[][]>(initArray);
-  const [block, setBlock] = useState<BlockStatus>(initBlock());
+  const [block, setBlock] = useState<BlockStatus>(createBlock());
+  // 게임 진행 상태
+  const [isPlaying, setPlaying] = useState(true);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
@@ -34,6 +16,13 @@ const Board = () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   });
+
+  const playStart = () => {
+    setBoard(initArray);
+
+    setPlaying(true);
+    setBlock(createBlock());
+  };
 
   // 4x4 중에 null 이 아닌 cell 상대좌표를 리턴하는 함수
   const getBlockPositions = (
@@ -106,8 +95,7 @@ const Board = () => {
           blockType,
           getBlockPositions(blockType, blockIndex),
         );
-
-        setBlock(initBlock());
+        checkGameOver(boardX, getBlockPositions(blockType, blockIndex));
       }
     } else if (e.code === "Space") {
       for (let i = 0; i < board.length - boardY; i++) {
@@ -118,7 +106,8 @@ const Board = () => {
             boardX,
             movePosY,
             getBlockPositions(blockType, blockIndex),
-          )
+          ) &&
+          movePosY > 0
         ) {
           // movePosY가 이동할 수 없으면 이전 위치까지만 이동 시킨다.
           moveBlock(boardX, movePosY - 1);
@@ -128,11 +117,18 @@ const Board = () => {
             blockType,
             getBlockPositions(blockType, blockIndex),
           );
-
-          setBlock(initBlock());
+          checkGameOver(boardX, getBlockPositions(blockType, blockIndex));
           return false;
         }
       }
+    }
+  };
+
+  const checkGameOver = (boardX: number, positions: Position[]) => {
+    if (!checkCells(boardX, 0, positions)) {
+      setPlaying(false);
+    } else {
+      setBlock(createBlock());
     }
   };
 
@@ -150,6 +146,8 @@ const Board = () => {
       const { x: blockX, y: blockY } = position;
 
       // board 에는 블럭의 값이 반영이 안되어있어서 현재 블럭 값 넣어줌. - fixToBoard 랑 겹치나?
+      console.log(`position = ${position}`);
+
       newBoard[boardY + blockY][boardX + blockX] = blockType;
 
       // if (!currentBoardY.includes(boardY + blockY)) {
@@ -202,6 +200,7 @@ const Board = () => {
       const { x: blockX, y: blockY } = position;
       newBoard[y + blockY][x + blockX] = type;
     }
+
     setBoard(newBoard);
   };
 
@@ -239,44 +238,112 @@ const Board = () => {
   };
 
   return (
-    <BoardWrapper>
-      {board?.map((row, rowIndex) => (
-        <Row key={`board-row-${rowIndex}`}>
-          {row.map((boardCell, colIndex) => {
-            const positions = getBlockPositions(
-              block.blockType,
-              block.blockIndex,
-            ).map((it) => ({
-              x: it.x + block.position.x,
-              y: it.y + block.position.y,
-            }));
+    <TetrisWrapper>
+      <BoardWrapper>
+        {board?.map((row, rowIndex) => (
+          <Row key={`board-row-${rowIndex}`}>
+            {row.map((boardCell, colIndex) => {
+              const positions = getBlockPositions(
+                block.blockType,
+                block.blockIndex,
+              ).map((it) => ({
+                x: it.x + block.position.x,
+                y: it.y + block.position.y,
+              }));
 
-            const isBlock = positions.find(
-              (it) => it.y === rowIndex && it.x === colIndex,
-            );
-            const boardValue = isBlock
-              ? block.blockType
-              : board[rowIndex][colIndex];
+              const isBlock = positions.find(
+                (it) => it.y === rowIndex && it.x === colIndex,
+              );
+              const boardValue = isBlock
+                ? block.blockType
+                : board[rowIndex][colIndex];
 
-            return (
-              <Cell key={`board-cell-${colIndex}`} blockType={boardValue}>
-                {isBlock ? "" : boardValue}
-              </Cell>
-            );
-          })}
-        </Row>
-      ))}
-    </BoardWrapper>
+              return (
+                <Cell key={`board-cell-${colIndex}`} blockType={boardValue}>
+                  {isBlock ? "" : boardValue}
+                </Cell>
+              );
+            })}
+          </Row>
+        ))}
+      </BoardWrapper>
+      <InfoWrapper>
+        <div className="next-block"></div>
+        <div className="time">
+          <h2>TIME</h2>
+
+          <span>00:00:00</span>
+        </div>
+        <div className="score">
+          <h2>SCORE</h2>
+          <span>100</span>
+        </div>
+        <div className="level">
+          <h2>Level</h2>
+          <span>1</span>
+        </div>
+      </InfoWrapper>
+      <GameOverWrapper isVisible={!isPlaying}>
+        <b>Game Over</b>
+        <span className="score_text">score : 100</span>
+        <button type="button" onClick={playStart}>
+          Play Again
+        </button>
+      </GameOverWrapper>
+    </TetrisWrapper>
   );
 };
 
 export default Board;
 
-const BoardWrapper = styled.div(() => ({}), {
+const TetrisWrapper = styled.div(() => ({}), {
+  display: "flex",
   position: "absolute",
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
+});
+
+const InfoWrapper = styled.div(() => ({}), {
+  marginLeft: "30px",
+  h2: {
+    fontSize: "14px",
+  },
+  ".next-block": {
+    marginBottom: "20px",
+    width: "120px",
+    height: "120px",
+    border: "2px solid black",
+  },
+});
+
+const GameOverWrapper = styled.div<{ isVisible: boolean }>(({ isVisible }) => ({
+  display: isVisible ? "flex" : "none",
+  alignItems: "center",
+  justifyContent: "center",
+  flexDirection: "column",
+  position: "absolute",
+  width: "100%",
+  height: "100%",
+  backgroundColor: "rgba(0,0,0,0.7)",
+  b: {
+    fontSize: "40px",
+    color: "#f00000",
+  },
+  button: {
+    marginTop: "20px",
+    width: "100px",
+    height: "48px",
+  },
+  ".score_text": {
+    display: "block",
+    marginTop: "30px",
+    fontSize: "28px",
+    fontWeight: "700",
+    color: "white",
+  },
+}));
+const BoardWrapper = styled.div(() => ({}), {
   border: "2px solid #000",
   width: "350px",
 });
