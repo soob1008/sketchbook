@@ -188,3 +188,23 @@ export const NEW_BLOCKS = {
     ],
   },
 };
+
+export interface BlockStatus {
+  position: Position;
+  blockType: BlockType;
+  blockIndex: number;
+}
+
+export const createBlock = (): BlockStatus => {
+  const keys = Object.keys(BLOCKS);
+  const randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+  return {
+    position: {
+      x: 3,
+      y: 0,
+    },
+    blockType: randomKey as BlockType,
+    blockIndex: 0,
+  };
+};
