@@ -143,10 +143,8 @@ const Board = () => {
     blockType: BlockType,
     positions: Position[],
   ) => {
-    //
     const newBoard = board.map((row) => [...row]);
-
-    let currentBoardY: number[] = [];
+    // let currentBoardY: number[] = [];
 
     for (let position of positions) {
       const { x: blockX, y: blockY } = position;
@@ -154,30 +152,41 @@ const Board = () => {
       // board 에는 블럭의 값이 반영이 안되어있어서 현재 블럭 값 넣어줌. - fixToBoard 랑 겹치나?
       newBoard[boardY + blockY][boardX + blockX] = blockType;
 
-      if (!currentBoardY.includes(boardY + blockY)) {
-        currentBoardY.push(boardY + blockY);
+      // if (!currentBoardY.includes(boardY + blockY)) {
+      //   currentBoardY.push(boardY + blockY);
+      // }
+    }
+
+    for (let y = newBoard.length - 1; y >= 0; y--) {
+      const isRemove = newBoard[y].every((x) => x !== null);
+
+      if (isRemove) {
+        for (let i = y; i >= 0; i--) {
+          newBoard[i] = newBoard[i - 1];
+        }
+        newBoard[0] = new Array(10).fill(null);
+        y++;
       }
     }
 
     // 삭제 해야될 Y 값 추출
-    const removeBoardY = currentBoardY.filter((posY) =>
-      newBoard[posY].every((type) => type !== null),
-    );
-
-    const removeBoardLength = removeBoardY.length;
-
-    if (removeBoardLength > 0) {
-      const maxRemoveBoardY = Math.max(...removeBoardY);
-
-      for (let posY = maxRemoveBoardY; posY >= 0; posY--) {
-        newBoard[posY] = newBoard[posY - removeBoardLength];
-
-        if (!newBoard[posY]) {
-          newBoard[posY] = new Array(10).fill(null);
-        }
-      }
-    }
-
+    // const removeBoardY = currentBoardY.filter((posY) =>
+    //   newBoard[posY].every((type) => type !== null),
+    // );
+    //
+    // const removeBoardLength = removeBoardY.length;
+    //
+    // if (removeBoardLength > 0) {
+    //   const maxRemoveBoardY = Math.max(...removeBoardY);
+    //
+    //   for (let posY = maxRemoveBoardY; posY >= 0; posY--) {
+    //     newBoard[posY] = newBoard[posY - removeBoardLength];
+    //
+    //     if (!newBoard[posY]) {
+    //       newBoard[posY] = new Array(10).fill(null);
+    //     }
+    //   }
+    // }
     setBoard(newBoard);
   };
 
@@ -231,35 +240,32 @@ const Board = () => {
 
   return (
     <BoardWrapper>
-      <div className="inner">
-        {board?.map((row, rowIndex) => (
-          <Row key={`board-row-${rowIndex}`}>
-            {row.map((boardCell, colIndex) => {
-              const positions = getBlockPositions(
-                block.blockType,
-                block.blockIndex,
-              ).map((it) => ({
-                x: it.x + block.position.x,
-                y: it.y + block.position.y,
-              }));
+      {board?.map((row, rowIndex) => (
+        <Row key={`board-row-${rowIndex}`}>
+          {row.map((boardCell, colIndex) => {
+            const positions = getBlockPositions(
+              block.blockType,
+              block.blockIndex,
+            ).map((it) => ({
+              x: it.x + block.position.x,
+              y: it.y + block.position.y,
+            }));
 
-              const isBlock = positions.find(
-                (it) => it.y === rowIndex && it.x === colIndex,
-              );
-              const boardValue = isBlock
-                ? block.blockType
-                : board[rowIndex][colIndex];
+            const isBlock = positions.find(
+              (it) => it.y === rowIndex && it.x === colIndex,
+            );
+            const boardValue = isBlock
+              ? block.blockType
+              : board[rowIndex][colIndex];
 
-              return (
-                <Cell key={`board-cell-${colIndex}`} blockType={boardValue}>
-                  {boardValue}
-                  {isBlock ? "b" : "x"}
-                </Cell>
-              );
-            })}
-          </Row>
-        ))}
-      </div>
+            return (
+              <Cell key={`board-cell-${colIndex}`} blockType={boardValue}>
+                {isBlock ? "" : boardValue}
+              </Cell>
+            );
+          })}
+        </Row>
+      ))}
     </BoardWrapper>
   );
 };
@@ -271,15 +277,12 @@ const BoardWrapper = styled.div(() => ({}), {
   top: "50%",
   left: "50%",
   transform: "translate(-50%, -50%)",
-  border: "1px solid #000",
+  border: "2px solid #000",
   width: "350px",
-  ".inner": {
-    width: "380px",
-  },
 });
 
 const Row = styled.div(() => ({
-  display: "inline-flex",
+  display: "flex",
   justifyContent: "center",
   alignItems: "center",
 }));
@@ -290,6 +293,10 @@ const Cell = styled.div<{ blockType: BlockType }>(({ blockType }) => ({
   alignItems: "center",
   width: "35px",
   height: "35px",
-  backgroundColor: blockType ? BLOCKS[`${blockType}`].color : "white",
+  backgroundColor: blockType ? BLOCKS[`${blockType}`].color : "#f2f2f2",
+  border: blockType
+    ? `6px outset ${BLOCKS[`${blockType}`].color}`
+    : "1px solid #e2e2e2",
+  boxSizing: "border-box",
   fontSize: "12px",
 }));
