@@ -24,51 +24,51 @@ const Board = () => {
   });
 
   useEffect(() => {
+    if (!isPlaying) return;
     const timer = setInterval(() => {
-      setTime((prev) => prev + 1);
+      blockTimer();
     }, 1000);
+
     return () => {
       clearInterval(timer);
     };
-  }, []);
+  }, [block, isPlaying]);
 
-  useEffect(() => {
+  const blockTimer = () => {
     const { position, blockType, blockIndex } = block;
     const { x: boardX, y: boardY } = position;
 
-    const timer = setInterval(() => {
-      // FIXME: 중복 로직 리팩토링
-      if (
-        checkCells(boardX, boardY + 1, getBlockPositions(blockType, blockIndex))
-      ) {
-        moveBlock(boardX, boardY + 1);
-      } else {
-        fixToBoard(
-          boardX,
-          boardY,
-          blockType,
-          getBlockPositions(blockType, blockIndex),
-        );
-        removeBoardLine(
-          boardX,
-          boardY,
-          blockType,
-          getBlockPositions(blockType, blockIndex),
-        );
-        initBlock(boardX, getBlockPositions(blockType, blockIndex));
-      }
-    }, 1000);
+    setTime((prev) => prev + 1);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [block]);
+    // FIXME: 중복 로직 리팩토링
+    if (
+      checkCells(boardX, boardY + 1, getBlockPositions(blockType, blockIndex))
+    ) {
+      moveBlock(boardX, boardY + 1);
+    } else {
+      fixToBoard(
+        boardX,
+        boardY,
+        blockType,
+        getBlockPositions(blockType, blockIndex),
+      );
+      removeBoardLine(
+        boardX,
+        boardY,
+        blockType,
+        getBlockPositions(blockType, blockIndex),
+      );
+      initBlock(boardX, getBlockPositions(blockType, blockIndex));
+    }
+  };
 
   const playStart = () => {
     setBoard(initArray);
 
     setPlaying(true);
     setBlock(createBlock());
+
+    setTime(0);
   };
 
   // 4x4 중에 null 이 아닌 cell 상대좌표를 리턴하는 함수
