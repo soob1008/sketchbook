@@ -1,6 +1,10 @@
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { BlockType, BLOCKS, Position, BlockStatus, createBlock } from "./util";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 const initArray = Array.from({ length: 20 }, () => Array(10).fill(null));
 
@@ -9,13 +13,56 @@ const Board = () => {
   const [block, setBlock] = useState<BlockStatus>(createBlock());
   // 게임 진행 상태
   const [isPlaying, setPlaying] = useState(true);
+  const [time, setTime] = useState(0);
 
   useEffect(() => {
     window.addEventListener("keydown", handleKeyDown);
+
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
     };
   });
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setTime((prev) => prev + 1);
+    }, 1000);
+    return () => {
+      clearInterval(timer);
+    };
+  }, []);
+
+  useEffect(() => {
+    const { position, blockType, blockIndex } = block;
+    const { x: boardX, y: boardY } = position;
+
+    const timer = setInterval(() => {
+      // FIXME: 중복 로직 리팩토링
+      if (
+        checkCells(boardX, boardY + 1, getBlockPositions(blockType, blockIndex))
+      ) {
+        moveBlock(boardX, boardY + 1);
+      } else {
+        fixToBoard(
+          boardX,
+          boardY,
+          blockType,
+          getBlockPositions(blockType, blockIndex),
+        );
+        removeBoardLine(
+          boardX,
+          boardY,
+          blockType,
+          getBlockPositions(blockType, blockIndex),
+        );
+        initBlock(boardX, getBlockPositions(blockType, blockIndex));
+      }
+    }, 1000);
+
+    return () => {
+      clearInterval(timer);
+    };
+  }, [block]);
 
   const playStart = () => {
     setBoard(initArray);
@@ -29,7 +76,7 @@ const Board = () => {
     blockKey: BlockType,
     statusIndex: number,
   ): Position[] => {
-    const status: number[][] = BLOCKS[`${blockKey}`].status[statusIndex];
+    const status: number[][] = BLOCKS[`${blockKey}`].state[statusIndex];
     let positions = Array<Position>();
     status.forEach((row, rowIndex) => {
       row.forEach((cell, cellIndex) => {
@@ -51,7 +98,7 @@ const Board = () => {
 
     if (e.key === "ArrowUp") {
       const nextStatusIndex =
-        (block.blockIndex + 1) % BLOCKS[`${block.blockType}`].status.length;
+        (block.blockIndex + 1) % BLOCKS[`${block.blockType}`].state.length;
 
       if (
         checkCells(
@@ -95,7 +142,7 @@ const Board = () => {
           blockType,
           getBlockPositions(blockType, blockIndex),
         );
-        checkGameOver(boardX, getBlockPositions(blockType, blockIndex));
+        initBlock(boardX, getBlockPositions(blockType, blockIndex));
       }
     } else if (e.code === "Space") {
       for (let i = 0; i < board.length - boardY; i++) {
@@ -117,18 +164,31 @@ const Board = () => {
             blockType,
             getBlockPositions(blockType, blockIndex),
           );
-          checkGameOver(boardX, getBlockPositions(blockType, blockIndex));
+          initBlock(boardX, getBlockPositions(blockType, blockIndex));
           return false;
         }
       }
     }
   };
 
-  const checkGameOver = (boardX: number, positions: Position[]) => {
-    if (!checkCells(boardX, 0, positions)) {
+  const initBlock = (boardX: number, positions: Position[]) => {
+    const keys = Object.keys(BLOCKS);
+    const randomKey = keys[Math.floor(Math.random() * keys.length)];
+
+    const createdBlock = {
+      position: {
+        x: 3,
+        y: 0,
+      },
+      blockType: randomKey as BlockType,
+      blockIndex: 0,
+    };
+
+    if (!checkCells(createdBlock.position.x, 0, positions)) {
       setPlaying(false);
     } else {
-      setBlock(createBlock());
+      setBlock(createdBlock);
+      console.log("블럭 생성 --");
     }
   };
 
@@ -268,20 +328,20 @@ const Board = () => {
         ))}
       </BoardWrapper>
       <InfoWrapper>
-        <div className="next-block"></div>
+        {/*<div className="next-block"></div>*/}
         <div className="time">
           <h2>TIME</h2>
 
-          <span>00:00:00</span>
+          <span>{dayjs.duration(time, "seconds").format("HH:mm:ss")}</span>
         </div>
-        <div className="score">
-          <h2>SCORE</h2>
-          <span>100</span>
-        </div>
-        <div className="level">
-          <h2>Level</h2>
-          <span>1</span>
-        </div>
+        {/*<div className="score">*/}
+        {/*  <h2>SCORE</h2>*/}
+        {/*  <span>100</span>*/}
+        {/*</div>*/}
+        {/*<div className="level">*/}
+        {/*  <h2>Level</h2>*/}
+        {/*  <span>1</span>*/}
+        {/*</div>*/}
       </InfoWrapper>
       <GameOverWrapper isVisible={!isPlaying}>
         <b>Game Over</b>

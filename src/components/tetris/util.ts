@@ -7,7 +7,7 @@ export type Position = {
 
 export const BLOCKS = {
   I: {
-    status: [
+    state: [
       [
         [0, 0, 0, 0],
         [1, 1, 1, 1],
@@ -36,7 +36,7 @@ export const BLOCKS = {
     color: "#ff5858",
   },
   L: {
-    status: [
+    state: [
       [
         [2, 0, 0, 0],
         [2, 2, 2, 0],
@@ -65,7 +65,7 @@ export const BLOCKS = {
     color: "#3f5aed",
   },
   J: {
-    status: [
+    state: [
       [
         [0, 0, 3, 0],
         [3, 3, 3, 0],
@@ -94,7 +94,7 @@ export const BLOCKS = {
     color: "orange",
   },
   T: {
-    status: [
+    state: [
       [
         [0, 4, 0, 0],
         [4, 4, 4, 0],
@@ -123,7 +123,7 @@ export const BLOCKS = {
     color: "#bc12cc",
   },
   O: {
-    status: [
+    state: [
       [
         [0, 5, 5, 0],
         [0, 5, 5, 0],
@@ -134,7 +134,7 @@ export const BLOCKS = {
     color: "yellow",
   },
   S: {
-    status: [
+    state: [
       [
         [0, 6, 6, 0],
         [6, 6, 0, 0],
@@ -151,7 +151,7 @@ export const BLOCKS = {
     color: "skyblue",
   },
   Z: {
-    status: [
+    state: [
       [
         [7, 7, 0, 0],
         [0, 7, 7, 0],
@@ -172,7 +172,7 @@ export const BLOCKS = {
 // 블럭 정의 - 상대 좌표 정의하는 법 - 두번째 테트리스 만들 때 이 방법으로 사용
 export const NEW_BLOCKS = {
   I: {
-    status: [
+    state: [
       [
         { x: 0, y: 1 },
         { x: 1, y: 1 },
