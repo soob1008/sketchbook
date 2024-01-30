@@ -1,52 +1,61 @@
 import styled from "@emotion/styled";
-import Title from "../components/ui/title";
+import { Col, Row } from "antd";
 
 const ResumePage = () => {
   return (
     <>
-      <Title title="Resume" />
-      <ResumeWrapper>
-        <div className="introduce">
-          <SubTitle>김수빈</SubTitle>
-          <div className="info">
-            <div className="me">
-              <div className="image"></div>
-              <ul>
-                <li>gmail: 1008sb354@gmail.com</li>
-                <li>phone: 010.3249.2471</li>
-                <li>github: -</li>
-                <li>blog: -</li>
-              </ul>
-            </div>
-            <div className="text">
-              <p>제가 생각하는 개발자의 중요한 것은 아래와 같습니다.</p>
-              <ul>
-                <li>- 정확한 비즈니스 로직 파악</li>
-                <li>- 협업 시 배려하는 자세</li>
-                <li>- 모르는 것을 인정하고 배우는 자세</li>
-              </ul>
-            </div>
-          </div>
-        </div>
+      {/*<Title title="Resume" />*/}
+      <div style={{ display: "none" }}>
+        <SubTitle>김수빈</SubTitle>
+        <Row>
+          <Col span={12}>
+            <img src="" alt="" />
+          </Col>
+          <Col span={12}>
+            <ul>
+              <li>gmail: 1008sb354@gmail.com</li>
+              <li>phone: 010.3249.2471</li>
+              <li>github: -</li>
+              <li>blog: -</li>
+            </ul>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <p>제가 생각하는 개발자의 중요한 것은 아래와 같습니다.</p>
+            <ul>
+              <li>- 정확한 비즈니스 로직 파악</li>
+              <li>- 협업 시 배려하는 자세</li>
+              <li>- 모르는 것을 인정하고 배우는 자세</li>
+            </ul>
+          </Col>
+        </Row>
+
         <div className="skill">
           <SubTitle>skill</SubTitle>
-          <ul>
-            <li>HTML, CSS, JS</li>
-            <li>React, TypeScript, Next.js</li>
-            <li>ECS, Docker</li>
-          </ul>
+          <Row>
+            <Col span={24}>
+              <ul>
+                <li>HTML, CSS, JS</li>
+                <li>React, TypeScript, Next.js</li>
+                <li>ECS, Docker</li>
+              </ul>
+            </Col>
+          </Row>
         </div>
+
         <div className="works">
           <SubTitle>work</SubTitle>
-
-          <div className="work">
-            <div className="company">
-              <h3>
-                handys <span>(1년 1개월)</span>
-              </h3>
-              <span>2022.09 - 2023.10</span>
-            </div>
-            <div className="work_list">
+          <Row>
+            <Col span={12}>
+              <div className="company">
+                <h3>
+                  handys <span>(1년 1개월)</span>
+                </h3>
+                <span>2022.09 - 2023.10</span>
+              </div>
+            </Col>
+            <Col span={12}>
               <div className="list">
                 <b>숙박 예약 관리 시스템(PMS) 개발 </b>
                 <ul>
@@ -82,16 +91,17 @@ const ResumePage = () => {
                   <li>- 비트버킷 파이프라인 구축</li>
                 </ul>
               </div>
-            </div>
-          </div>
-          <div className="work">
-            <div className="company">
+            </Col>
+          </Row>
+
+          <Row>
+            <Col span={12}>
               <h3>
                 m-sync <span>(1년 10개월)</span>
               </h3>
               <span>2022.09 - 2023.10</span>
-            </div>
-            <div className="work_list">
+            </Col>
+            <Col span={12}>
               <div className="list">
                 <b>미래엔 웹 리뉴얼</b>
                 <ul>
@@ -127,137 +137,39 @@ const ResumePage = () => {
                   </li>
                 </ul>
               </div>
-            </div>
-          </div>
+            </Col>
+          </Row>
         </div>
+
         <div className="edu">
           <SubTitle>education</SubTitle>
-          <dl>
-            <dt>원티트 프리온보딩 프론트엔드 과정</dt>
-            <dd>2022.07 - 2022.08</dd>
-          </dl>
-          <dl>
-            <dt>건국대학교 글로컬캠퍼스 컴퓨터 공학 전공</dt>
-            <dd>2013.03 ~ 2017.02.</dd>
-          </dl>
-          <dl>
-            <dt>정보처리기사</dt>
-            <dd>2016.07</dd>
-          </dl>
+          <Row>
+            <Col span={24}>
+              <dl>
+                <dt>원티트 프리온보딩 프론트엔드 과정</dt>
+                <dd>2022.07 - 2022.08</dd>
+              </dl>
+              <dl>
+                <dt>건국대학교 글로컬캠퍼스 컴퓨터 공학 전공</dt>
+                <dd>2013.03 ~ 2017.02.</dd>
+              </dl>
+              <dl>
+                <dt>정보처리기사</dt>
+                <dd>2016.07</dd>
+              </dl>
+            </Col>
+          </Row>
         </div>
-      </ResumeWrapper>
+      </div>
     </>
   );
 };
 
 export default ResumePage;
 
-const ResumeWrapper = styled("div")(({ theme }) => ({
-  "& > div": {
-    marginBottom: "8rem",
-  },
-
-  ".introduce": {
-    marginTop: "8rem",
-    ".info": {
-      ".me": {
-        display: "flex",
-        ".image": {
-          width: "250px",
-          height: "250px",
-          backgroundColor: theme.color.blue0,
-        },
-        "& > ul": {
-          paddingLeft: "5rem",
-          li: {
-            marginBottom: "0.6rem",
-            fontSize: " 1.4rem",
-          },
-        },
-      },
-      ".text": {
-        marginTop: "3rem",
-        p: {
-          fontWeight: 700,
-          fontSize: "1.4rem",
-        },
-        "& > ul": {
-          marginTop: "1rem",
-          li: {
-            fontSize: "1.4rem",
-          },
-        },
-      },
-    },
-  },
-
-  ".skill": {
-    ul: {
-      marginTop: "2rem",
-      li: {
-        fontSize: "1.4rem",
-      },
-    },
-  },
-  ".works": {
-    ".work": {
-      display: "flex",
-      marginBottom: "5rem",
-      ".company": {
-        flex: 1,
-        h3: {
-          fontSize: "2rem",
-          "& > span": {
-            fontSize: "1.4rem",
-          },
-        },
-        "& > span": {
-          display: "block",
-          marginTop: "1rem",
-          fontSize: "1.2rem",
-        },
-      },
-      ".work_list": {
-        flex: 1,
-        ".list": {
-          marginBottom: "2rem",
-          b: {
-            fontSize: "1.6rem",
-          },
-          ul: {
-            li: {
-              fontSize: "1.4rem",
-            },
-          },
-          a: {
-            textDecoration: "underline",
-            color: theme.color.primary,
-          },
-        },
-      },
-      "&:last-of-type(1)": {
-        marginBottom: 0,
-      },
-    },
-  },
-
-  ".edu": {
-    dl: {
-      marginBottom: "2rem",
-      dt: {
-        fontWeight: 700,
-        fontSize: "1.6rem",
-      },
-      dd: {
-        fontSize: "1.4rem",
-      },
-    },
-  },
-}));
-
 const SubTitle = styled("h2")(({ theme }) => ({
   marginBottom: "2.4rem",
   paddingBottom: "2rem",
   fontSize: "2.4rem",
-  borderBottom: `1px solid ${theme.color.borderGray0}`,
+  // borderBottom: `1px solid ${theme.color.borderGray0}`,
 }));

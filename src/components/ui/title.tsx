@@ -1,5 +1,4 @@
 import styled from "@emotion/styled";
-import theme from "../../styles/theme";
 
 interface TitlePops {
   title: string;
@@ -34,7 +33,6 @@ const TitleWrapper = styled("div")`
       right: -0.6rem;
       width: 100%;
       height: 2.2rem;
-      background-color: ${theme.color.primary};
       opacity: 0.3;
       z-index: -1;
     }

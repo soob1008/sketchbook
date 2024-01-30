@@ -13,6 +13,7 @@ const Board = () => {
   const [block, setBlock] = useState<BlockStatus>(createBlock());
   // 게임 진행 상태
   const [isPlaying, setPlaying] = useState(true);
+
   const [time, setTime] = useState(0);
 
   useEffect(() => {
@@ -331,7 +332,6 @@ const Board = () => {
         {/*<div className="next-block"></div>*/}
         <div className="time">
           <h2>TIME</h2>
-
           <span>{dayjs.duration(time, "seconds").format("HH:mm:ss")}</span>
         </div>
         {/*<div className="score">*/}
@@ -365,7 +365,10 @@ const InfoWrapper = styled.div(() => ({}), {
   marginLeft: "30px",
   h2: {
     marginBottom: "1rem",
-    fontSize: "1.6rem",
+  },
+  button: {
+    marginTop: "2rem",
+    fontWeight: 700,
   },
   // ".next-block": {
   //   marginBottom: "20px",
@@ -374,9 +377,7 @@ const InfoWrapper = styled.div(() => ({}), {
   //   border: "2px solid black",
   // },
   ".time": {
-    span: {
-      fontSize: "1.4rem",
-    },
+    span: {},
   },
 });
 
@@ -394,22 +395,21 @@ const GameOverWrapper = styled.div<{ isVisible: boolean }>(
     transform: "translate(-50%, -50%)",
     backgroundColor: "rgba(0,0,0,0.5)",
     b: {
-      fontSize: "3rem",
-      color: theme.color.primary,
+      fontSize: "16px",
+      // color: theme.color.primary,
     },
     button: {
       marginTop: "20px",
       width: "12rem",
       height: "4.8rem",
-      backgroundColor: theme.color.white,
+      //  backgroundColor: theme.color.white,
       fontWeight: 700,
-      fontSize: "1.2rem",
+
       border: "none",
     },
     ".score_text": {
       display: "block",
       marginTop: "30px",
-      fontSize: "28px",
       fontWeight: "700",
       color: "white",
     },
@@ -437,5 +437,4 @@ const Cell = styled("div")<{ blockType: BlockType }>(({ blockType }) => ({
     ? `6px outset ${BLOCKS[`${blockType}`].color}`
     : "1px solid #e2e2e2",
   boxSizing: "border-box",
-  fontSize: "1.2rem",
 }));
