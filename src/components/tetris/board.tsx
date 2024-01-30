@@ -13,6 +13,7 @@ const Board = () => {
   const [block, setBlock] = useState<BlockStatus>(createBlock());
   // 게임 진행 상태
   const [isPlaying, setPlaying] = useState(true);
+
   const [time, setTime] = useState(0);
 
   useEffect(() => {
@@ -331,7 +332,6 @@ const Board = () => {
         {/*<div className="next-block"></div>*/}
         <div className="time">
           <h2>TIME</h2>
-
           <span>{dayjs.duration(time, "seconds").format("HH:mm:ss")}</span>
         </div>
         {/*<div className="score">*/}
@@ -345,7 +345,7 @@ const Board = () => {
       </InfoWrapper>
       <GameOverWrapper isVisible={!isPlaying}>
         <b>Game Over</b>
-        <span className="score_text">score : 100</span>
+        {/*<span className="score_text">score : 100</span>*/}
         <button type="button" onClick={playStart}>
           Play Again
         </button>
@@ -356,65 +356,77 @@ const Board = () => {
 
 export default Board;
 
-const TetrisWrapper = styled.div(() => ({}), {
-  display: "flex",
-  position: "absolute",
-  top: "50%",
-  left: "50%",
-  transform: "translate(-50%, -50%)",
-});
+const TetrisWrapper = styled.div`
+  display: flex;
+  position: relative;
+`;
 
 const InfoWrapper = styled.div(() => ({}), {
   marginLeft: "30px",
   h2: {
-    fontSize: "14px",
-  },
-  ".next-block": {
-    marginBottom: "20px",
-    width: "120px",
-    height: "120px",
-    border: "2px solid black",
-  },
-});
-
-const GameOverWrapper = styled.div<{ isVisible: boolean }>(({ isVisible }) => ({
-  display: isVisible ? "flex" : "none",
-  alignItems: "center",
-  justifyContent: "center",
-  flexDirection: "column",
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0,0,0,0.7)",
-  b: {
-    fontSize: "40px",
-    color: "#f00000",
+    marginBottom: "1rem",
   },
   button: {
-    marginTop: "20px",
-    width: "100px",
-    height: "48px",
+    marginTop: "2rem",
+    fontWeight: 700,
   },
-  ".score_text": {
-    display: "block",
-    marginTop: "30px",
-    fontSize: "28px",
-    fontWeight: "700",
-    color: "white",
+  // ".next-block": {
+  //   marginBottom: "20px",
+  //   width: "120px",
+  //   height: "120px",
+  //   border: "2px solid black",
+  // },
+  ".time": {
+    span: {},
   },
-}));
-const BoardWrapper = styled.div(() => ({}), {
-  border: "2px solid #000",
-  width: "350px",
 });
 
-const Row = styled.div(() => ({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
-}));
+const GameOverWrapper = styled.div<{ isVisible: boolean }>(
+  ({ theme, isVisible }) => ({
+    display: isVisible ? "flex" : "none",
+    alignItems: "center",
+    justifyContent: "center",
+    flexDirection: "column",
+    position: "fixed",
+    width: "50%",
+    height: "50%",
+    left: "50%",
+    top: "50%",
+    transform: "translate(-50%, -50%)",
+    backgroundColor: "rgba(0,0,0,0.5)",
+    b: {
+      fontSize: "16px",
+      // color: theme.color.primary,
+    },
+    button: {
+      marginTop: "20px",
+      width: "12rem",
+      height: "4.8rem",
+      //  backgroundColor: theme.color.white,
+      fontWeight: 700,
 
-const Cell = styled.div<{ blockType: BlockType }>(({ blockType }) => ({
+      border: "none",
+    },
+    ".score_text": {
+      display: "block",
+      marginTop: "30px",
+      fontWeight: "700",
+      color: "white",
+    },
+  }),
+);
+const BoardWrapper = styled.div`
+  border: 2px solid #000;
+  width: 350px;
+`;
+
+const Row = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`;
+
+const Cell = styled("div")<{ blockType: BlockType }>(({ blockType }) => ({
   display: "flex",
   justifyContent: "center",
   alignItems: "center",
@@ -425,5 +437,4 @@ const Cell = styled.div<{ blockType: BlockType }>(({ blockType }) => ({
     ? `6px outset ${BLOCKS[`${blockType}`].color}`
     : "1px solid #e2e2e2",
   boxSizing: "border-box",
-  fontSize: "12px",
 }));

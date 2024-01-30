@@ -1,17 +1,22 @@
+const breakpoints = [768, 1200];
+export const media = breakpoints.map((bp) => `@media (max-width: ${bp}px)`);
 
-
-const theme = {
-    components: {
-        Button: {
-            colorPrimary: '#00b96b',
-                algorithm: true, // Enable algorithm
-        },
-        Input: {
-            colorPrimary: '#eb2f96',
-                algorithm: true, // Enable algorithm
-        }
+const antdTheme = {
+  token: {
+    // colorPrimary: "#F59B40",
+    colorBgContainer: "#ffffff",
+    borderColor: "#e2e2e2",
+  },
+  components: {
+    Layout: {
+      /* here is your component tokens */
+      headerBg: "#ffffff",
+      headerHeight: 64,
+      bodyBg: "#ffffff",
+      siderBg: "#ffffff",
     },
+  },
+  cssVar: true,
+};
 
-}
-
-export default theme;
+export default antdTheme;
