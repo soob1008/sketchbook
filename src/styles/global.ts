@@ -21,4 +21,10 @@ export const GlobalStyled = css`
     box-sizing: border-box;
     color: #222;
   }
+  ul,
+  li {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 `;
