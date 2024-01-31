@@ -1,13 +1,14 @@
-import React, { ReactElement, useState } from "react";
+import React, { ReactElement, useEffect, useState } from "react";
 import styled from "@emotion/styled";
 import {
   RocketOutlined,
   CodeOutlined,
   FileTextOutlined,
+  HomeOutlined,
 } from "@ant-design/icons";
 
 import { Breadcrumb, Layout, Menu, MenuProps, theme } from "antd";
-import { useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 const { Content, Sider } = Layout;
 
@@ -35,9 +36,10 @@ function getItem(
 
 const menuItems: MenuItem[] = [
   getItem("laboratory", "laboratory", <CodeOutlined />, [
-    getItem("redux", "redux_todo"),
+    getItem("todo", "todo"),
+    getItem("chat", "chat"),
   ]),
-  getItem("game", "game", <RocketOutlined />, [getItem("테트리스", "tetris1")]),
+  getItem("game", "game", <RocketOutlined />, [getItem("테트리스", "tetris")]),
   getItem("resume", "resume", <FileTextOutlined />),
   // getItem("Navigation Three", "sub4", <SettingOutlined />, [
   //   getItem("Option 9", "9"),
@@ -48,16 +50,19 @@ const menuItems: MenuItem[] = [
 ];
 
 const MainLayout = ({ children }: LayoutProps) => {
-  let navigate = useNavigate();
+  const navigate = useNavigate();
+  const { pathname } = useLocation();
+  let currentPath = pathname.split("/").filter((path) => path !== "");
 
   const {
     token: { colorBgContainer, borderRadiusLG },
   } = theme.useToken();
-  const [current, setCurrent] = useState("mail");
+
+  useEffect(() => {
+    console.log("location path name", currentPath);
+  }, []);
 
   const onClick: MenuProps["onClick"] = (e) => {
-    console.log("click ", e);
-    setCurrent(e.key);
     navigate(`/${e.key}`);
   };
 
@@ -66,22 +71,27 @@ const MainLayout = ({ children }: LayoutProps) => {
       <Layout style={{ height: "100%", backgroundColor: "pink" }}>
         <CustomSideBar width={260}>
           <div className="logo">
-            <h1>SketchBook</h1>
+            <h1>
+              <Link to={"/"}>SketchBook</Link>
+            </h1>
           </div>
           <Menu
             mode="inline"
             defaultSelectedKeys={["home"]}
             defaultOpenKeys={["laboratory"]}
-            style={{ height: "100%", borderRight: 0 }}
+            style={{ borderRight: 0 }}
             items={menuItems}
             onClick={onClick}
           />
         </CustomSideBar>
-        <Layout style={{ padding: "0 24px 24px" }}>
+        <Layout style={{ padding: "0 24px 24px", overflowY: "scroll" }}>
           <Breadcrumb style={{ margin: "16px 0" }}>
-            <Breadcrumb.Item>Home</Breadcrumb.Item>
-            <Breadcrumb.Item>List</Breadcrumb.Item>
-            <Breadcrumb.Item>App</Breadcrumb.Item>
+            <Breadcrumb.Item>
+              <HomeOutlined />
+            </Breadcrumb.Item>
+            {currentPath.map((path) => (
+              <Breadcrumb.Item key={path}>{path}</Breadcrumb.Item>
+            ))}
           </Breadcrumb>
           <Content
             style={{
