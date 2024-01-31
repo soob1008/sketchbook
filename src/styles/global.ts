@@ -1,5 +1,13 @@
 import { css } from "@emotion/react";
 export const GlobalStyled = css`
+  @font-face {
+    font-family: "Pretendard";
+    src: url("https://cdn.jsdelivr.net/gh/Project-Noonnu/noonfonts_2107@1.1/Pretendard-Regular.woff")
+      format("woff");
+    font-weight: 400;
+    font-style: normal;
+  }
+
   body {
     margin: 0;
     font-family:

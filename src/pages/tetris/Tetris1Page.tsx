@@ -2,7 +2,7 @@ import Board from "../../components/tetris/board";
 
 import { Col, Row } from "antd";
 
-const TetrisPage = () => {
+const Tetris1Page = () => {
   return (
     <>
       <Row>
@@ -15,4 +15,4 @@ const TetrisPage = () => {
   );
 };
 
-export default TetrisPage;
+export default Tetris1Page;

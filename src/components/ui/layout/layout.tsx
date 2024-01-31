@@ -36,9 +36,10 @@ function getItem(
 
 const menuItems: MenuItem[] = [
   getItem("laboratory", "laboratory", <CodeOutlined />, [
-    getItem("redux", "redux_todo"),
+    getItem("todo", "todo"),
+    getItem("chat", "chat"),
   ]),
-  getItem("game", "game", <RocketOutlined />, [getItem("테트리스", "tetris1")]),
+  getItem("game", "game", <RocketOutlined />, [getItem("테트리스", "tetris")]),
   getItem("resume", "resume", <FileTextOutlined />),
   // getItem("Navigation Three", "sub4", <SettingOutlined />, [
   //   getItem("Option 9", "9"),

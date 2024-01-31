@@ -84,7 +84,7 @@ const HomePage = () => {
 
   return (
     <div style={{ paddingBottom: "100px" }}>
-      <Title level={2}>To-do list</Title>
+      {/*<Title level={2}>To-do list</Title>*/}
       <Row>
         <Col span={18}>
           {todoList.map((list, index) => (
