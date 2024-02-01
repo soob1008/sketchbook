@@ -11,9 +11,7 @@ const initArray = Array.from({ length: 20 }, () => Array(10).fill(null));
 const Board = () => {
   const [board, setBoard] = useState<BlockType[][]>(initArray);
   const [block, setBlock] = useState<BlockStatus>(createBlock());
-  // 게임 진행 상태
   const [isPlaying, setPlaying] = useState(true);
-
   const [time, setTime] = useState(0);
 
   useEffect(() => {
