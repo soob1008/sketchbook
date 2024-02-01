@@ -4,7 +4,7 @@ import { Divider, List, Typography, Checkbox, Anchor, Row, Col } from "antd";
 import type { CheckboxProps } from "antd";
 import styled from "@emotion/styled";
 
-const { Title, Text } = Typography;
+const { Text } = Typography;
 
 const todoList = [
   {
@@ -84,9 +84,8 @@ const HomePage = () => {
 
   return (
     <div style={{ paddingBottom: "100px" }}>
-      {/*<Title level={2}>To-do list</Title>*/}
       <Row>
-        <Col span={18}>
+        <Col span={24}>
           {todoList.map((list, index) => (
             <div key={`todo-${index}`} id={list.href}>
               <List
@@ -109,7 +108,7 @@ const HomePage = () => {
             </div>
           ))}
         </Col>
-        <Col span={6}>
+        <Col span={6} style={{ display: "none" }}>
           <MainAnchor
             replace
             items={[
