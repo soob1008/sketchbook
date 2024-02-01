@@ -31,5 +31,5 @@ jobs:
     - name: Build, tag, and push image to Amazon ECR
       run: |
         docker build -t sketchbook .
-		    docker tag sketchbook:latest 369845241120.dkr.ecr.us-east-1.amazonaws.com/sketchbook:latest
+	docker tag sketchbook:latest 369845241120.dkr.ecr.us-east-1.amazonaws.com/sketchbook:latest
         docker push 369845241120.dkr.ecr.us-east-1.amazonaws.com/sketchbook:latest
