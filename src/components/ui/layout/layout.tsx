@@ -5,12 +5,13 @@ import {
   CodeOutlined,
   FileTextOutlined,
   HomeOutlined,
+  MenuOutlined,
 } from "@ant-design/icons";
 
-import { Breadcrumb, Layout, Menu, MenuProps, theme } from "antd";
+import { Breadcrumb, Button, Layout, Menu, MenuProps, theme, Col } from "antd";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
-const { Content, Sider } = Layout;
+const { Header, Content, Sider } = Layout;
 
 interface LayoutProps {
   children: ReactElement;
@@ -37,30 +38,27 @@ function getItem(
 const menuItems: MenuItem[] = [
   getItem("laboratory", "laboratory", <CodeOutlined />, [
     getItem("todo", "todo"),
-    getItem("chat", "chat"),
   ]),
   getItem("game", "game", <RocketOutlined />, [getItem("테트리스", "tetris")]),
   getItem("resume", "resume", <FileTextOutlined />),
-  // getItem("Navigation Three", "sub4", <SettingOutlined />, [
-  //   getItem("Option 9", "9"),
-  //   getItem("Option 10", "10"),
-  //   getItem("Option 11", "11"),
-  //   getItem("Option 12", "12"),
-  // ]),
 ];
 
 const MainLayout = ({ children }: LayoutProps) => {
   const navigate = useNavigate();
   const { pathname } = useLocation();
   let currentPath = pathname.split("/").filter((path) => path !== "");
+  const [isMobile, setIsMobile] = useState(false);
+  const [isCollapsed, setCollapsed] = useState(false);
 
   const {
-    token: { colorBgContainer, borderRadiusLG },
+    token: { colorBgContainer, borderRadiusLG, colorPrimary },
   } = theme.useToken();
 
   useEffect(() => {
-    console.log("location path name", currentPath);
-  }, []);
+    if (isMobile) {
+      setCollapsed(true);
+    }
+  }, [pathname]);
 
   const onClick: MenuProps["onClick"] = (e) => {
     navigate(`/${e.key}`);
@@ -69,7 +67,27 @@ const MainLayout = ({ children }: LayoutProps) => {
   return (
     <Layout style={{ overflow: "hidden", height: "100vh" }}>
       <Layout style={{ height: "100%", backgroundColor: "pink" }}>
-        <CustomSideBar width={260}>
+        <NavSideBar
+          width={260}
+          breakpoint="lg"
+          collapsedWidth="0"
+          onBreakpoint={(broken) => {
+            setIsMobile(broken);
+          }}
+          onCollapse={(collapsed, type) => {
+            setCollapsed(collapsed);
+          }}
+          collapsed={isCollapsed}
+          zeroWidthTriggerStyle={{
+            backgroundColor: colorPrimary,
+          }}
+          style={{
+            position: isMobile ? "fixed" : "relative",
+            zIndex: 10,
+            top: 0,
+            bottom: 0,
+          }}
+        >
           <div className="logo">
             <h1>
               <Link to={"/"}>SketchBook</Link>
@@ -79,12 +97,16 @@ const MainLayout = ({ children }: LayoutProps) => {
             mode="inline"
             defaultSelectedKeys={["home"]}
             defaultOpenKeys={["laboratory"]}
-            style={{ borderRight: 0 }}
             items={menuItems}
             onClick={onClick}
           />
-        </CustomSideBar>
-        <Layout style={{ padding: "0 24px 24px", overflowY: "scroll" }}>
+        </NavSideBar>
+        <Layout
+          style={{
+            padding: isMobile ? "0 16px 24px" : "0 24px 24px",
+            overflowY: "scroll",
+          }}
+        >
           <Breadcrumb style={{ margin: "16px 0" }}>
             <Breadcrumb.Item>
               <HomeOutlined />
@@ -95,7 +117,7 @@ const MainLayout = ({ children }: LayoutProps) => {
           </Breadcrumb>
           <Content
             style={{
-              padding: 24,
+              padding: isMobile ? 0 : 24,
               margin: 0,
               minHeight: 280,
               background: colorBgContainer,
@@ -112,14 +134,14 @@ const MainLayout = ({ children }: LayoutProps) => {
 
 export default MainLayout;
 
-const CustomSideBar = styled(Sider)`
-  display: flex;
-  flex-direction: column;
-  border-right: 1px solid #f2f2f2;
-  .logo {
-    padding: 60px 0 30px;
-    h1 {
-      text-align: center;
-    }
-  }
-`;
+const NavSideBar = styled(Sider)(() => ({
+  display: "flex",
+  flexDirection: "column",
+  borderRight: "1px solid #f2f2f2",
+  ".logo": {
+    padding: "60px 0 30px",
+    h1: {
+      textAlign: "center",
+    },
+  },
+}));

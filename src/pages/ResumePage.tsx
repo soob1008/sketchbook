@@ -45,22 +45,9 @@ const ResumePage = () => {
       >
         <div className="list">
           <Title level={4}>subin.kim</Title>
-          <Card>
-            <Row>
-              <Col span={8}>
-                <div
-                  className="my_img"
-                  style={{
-                    width: "300px",
-                  }}
-                >
-                  <img
-                    src="https://dummyimage.com/250x280/26fcc6/0011ff"
-                    alt=""
-                  />
-                </div>
-              </Col>
-              <Col span={8}>
+          <Row>
+            <Col lg={12} xs={24}>
+              <Card>
                 <List
                   dataSource={myInfoList}
                   renderItem={(item, index) => (
@@ -76,16 +63,9 @@ const ResumePage = () => {
                     </List.Item>
                   )}
                 />
-
-                {/*<p>제가 생각하는 개발자의 중요한 것은 아래와 같습니다.</p>*/}
-                {/*<ul>*/}
-                {/*  <li>- 정확한 비즈니스 로직 파악</li>*/}
-                {/*  <li>- 협업 시 배려하는 자세</li>*/}
-                {/*  <li>- 모르는 것을 인정하고 배우는 자세</li>*/}
-                {/*</ul>*/}
-              </Col>
-            </Row>
-          </Card>
+              </Card>
+            </Col>
+          </Row>
         </div>
         <div className="list">
           <Title level={4}>Skill</Title>
@@ -109,13 +89,15 @@ const ResumePage = () => {
           <Title level={4}>Work</Title>
           <Card>
             <Row>
-              <Col span={11}>
+              <Col lg={11} xs={24}>
                 <Text strong>
                   handys <span>(1년 1개월)</span>
                 </Text>
-                <Text style={{ display: "block" }}>2022.09 - 2023.10</Text>
+                <Text style={{ display: "block", marginBottom: "20px" }}>
+                  2022.09 - 2023.10
+                </Text>
               </Col>
-              <Col span={13}>
+              <Col lg={13} xs={24}>
                 <Space direction="vertical">
                   <div>
                     <b>숙박 예약 관리 시스템(PMS) 개발 </b>
@@ -133,12 +115,18 @@ const ResumePage = () => {
                       <li>- 컴포넌트 구성 및 UI 작업</li>
                       <li>- 예약 날짜 선택 캘린더 구현</li>
                       <li>
-                        <a href="https://play.google.com/store/apps/details?id=kr.co.urbanstay">
+                        <a
+                          href="https://play.google.com/store/apps/details?id=kr.co.urbanstay"
+                          target="_blank"
+                        >
                           안드로이드 다운로드
                         </a>
                       </li>
                       <li>
-                        <a href="https://apps.apple.com/kr/app/%EC%96%B4%EB%B0%98%EC%8A%A4%ED%85%8C%EC%9D%B4/id1664059073">
+                        <a
+                          href="https://apps.apple.com/kr/app/%EC%96%B4%EB%B0%98%EC%8A%A4%ED%85%8C%EC%9D%B4/id1664059073"
+                          target="_blank"
+                        >
                           ios 다운로드
                         </a>
                       </li>
@@ -157,13 +145,15 @@ const ResumePage = () => {
             </Row>
             <Divider />
             <Row style={{ marginTop: "20px" }}>
-              <Col span={11}>
+              <Col lg={12} xs={24}>
                 <Text strong>
                   m-sync <span>(1년 10개월)</span>
                 </Text>
-                <Text style={{ display: "block" }}>2020.07 - 2022.04</Text>
+                <Text style={{ display: "block", marginBottom: "20px" }}>
+                  2020.07 - 2022.04
+                </Text>
               </Col>
-              <Col span={13}>
+              <Col lg={12} xs={24}>
                 <Space direction="vertical">
                   <div>
                     <b>미래엔 웹 리뉴얼</b>
