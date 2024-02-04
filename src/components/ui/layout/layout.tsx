@@ -90,7 +90,7 @@ const MainLayout = ({ children }: LayoutProps) => {
         >
           <div className="logo">
             <h1>
-              <Link to={"/"}>SketchBook</Link>
+              <Link to={"/"}>SB</Link>
             </h1>
           </div>
           <Menu
