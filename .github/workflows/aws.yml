@@ -73,9 +73,9 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-        docker build -t sketchbook .
-        docker tag sketchbook:latest 369845241120.dkr.ecr.ap-northeast-2.amazonaws.com/sketchbook:latest
-        docker push 369845241120.dkr.ecr.ap-northeast-2.amazonaws.com/sketchbook:latest
+         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+         echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
     - name: Fill in the new image ID in the Amazon ECS task definition
       id: task-def
