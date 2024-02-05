@@ -32,13 +32,15 @@ on:
 
 env:
   AWS_REGION: ap-northeast-2                   # set this to your preferred AWS region, e.g. us-west-1
-  ECR_REPOSITORY: sketchbook           # set this to your Amazon ECR repository name
+  ECR_REPOSITORY: sketchbook    # set this to your Amazon ECR repository name
+  ECR_REGISTRY: 369845241120.dkr.ecr.ap-northeast-2.amazonaws.com
   ECS_SERVICE: sketchbook-service                # set this to your Amazon ECS service name
   ECS_CLUSTER: sketchbook-cl                # set this to your Amazon ECS cluster name
   ECS_TASK_DEFINITION: .aws/sketchbook-td.json # set this to the path to your Amazon ECS task definition
-                                               # file, e.g. .aws/task-definition.json
+                                                    # file, e.g. .aws/task-definition.json
   CONTAINER_NAME: sketchbook-container          # set this to the name of the container in the
-                                               # containerDefinitions section of your task definition
+  IMAGE_TAG: latest
+  # containerDefinitions section of your task definition
 
 permissions:
   contents: read
@@ -73,7 +75,8 @@ jobs:
         # Build a docker container and
         # push it to ECR so that it can
         # be deployed to ECS.
-         docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+         docker build -t $ECR_REPOSITORY .
+         docker tag $ECR_REPOSITORY:$IMAGE_TAG $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
          echo "image=$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG" >> $GITHUB_OUTPUT
 
