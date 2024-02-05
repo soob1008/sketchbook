@@ -14,7 +14,8 @@ import Tetris1Page from "./pages/tetris/Tetris1Page";
 import TodoListPage from "./pages/todo/TodoListPage";
 import TodoReduxPage from "./pages/todo/TodoReduxPage";
 import { Provider } from "react-redux";
-import { reduxStore } from "./store/redux";
+import { reduxStore } from "./components/todo/redux/store";
+import TodoZustandPage from "./pages/todo/TodoZustandPage";
 
 const px2rem = px2remTransformer({
   rootValue: 10, // 32px = 1rem; @default 16
@@ -33,6 +34,7 @@ function App() {
                   <Route path="/" element={<HomePage />} />
                   <Route path="/todo" element={<TodoListPage />} />
                   <Route path="/todo/redux" element={<TodoReduxPage />} />
+                  <Route path="/todo/zustand" element={<TodoZustandPage />} />
                   <Route path="/tetris" element={<TetrisListPage />} />
                   <Route path="/tetris/1" element={<Tetris1Page />} />
                   <Route path="/resume" element={<ResumePage />} />
