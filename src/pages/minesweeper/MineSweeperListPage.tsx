@@ -2,11 +2,11 @@ import ListTable from "../../components/ui/table/ListTable";
 
 const mineSweeperList = [
   {
-    key: "tetris1",
-    title: "처음으로 만든 테트리스",
+    key: "minesweeper1",
+    title: "지뢰찾기 초급",
     skill: ["react"],
-    link: "/tetris/1",
-    date: "2024-01-20",
+    link: "/minesweeper/1",
+    date: "2024-02-07",
   },
 ];
 

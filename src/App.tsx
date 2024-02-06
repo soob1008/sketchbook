@@ -6,18 +6,17 @@ import MainLayout from "./components/ui/layout/layout";
 import ResumePage from "./pages/ResumePage";
 import { ConfigProvider } from "antd";
 import { px2remTransformer, StyleProvider } from "@ant-design/cssinjs";
-import { antdTheme, theme } from "./styles/theme";
+import { antdTheme, theme } from "@styles/theme";
 import { Global, ThemeProvider } from "@emotion/react";
-import { GlobalStyled } from "./styles/global";
+import { GlobalStyled } from "@styles/global";
 import TetrisListPage from "./pages/tetris/TetrisListPage";
 import Tetris1Page from "./pages/tetris/Tetris1Page";
 import TodoListPage from "./pages/todo/TodoListPage";
 import TodoReduxPage from "./pages/todo/TodoReduxPage";
 import { Provider } from "react-redux";
-import { reduxStore } from "./store/redux";
 import MineSweeperListPage from "./pages/minesweeper/MineSweeperListPage";
 import MineSweeper1Page from "./pages/minesweeper/MineSweeper1Page";
-import { reduxStore } from "./components/todo/redux/store";
+import { reduxStore } from "@components/todo/redux/store";
 import TodoZustandPage from "./pages/todo/TodoZustandPage";
 
 const px2rem = px2remTransformer({
