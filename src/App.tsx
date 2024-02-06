@@ -15,6 +15,8 @@ import TodoListPage from "./pages/todo/TodoListPage";
 import TodoReduxPage from "./pages/todo/TodoReduxPage";
 import { Provider } from "react-redux";
 import { reduxStore } from "./store/redux";
+import MineSweeperListPage from "./pages/minesweeper/MineSweeperListPage";
+import MineSweeper1Page from "./pages/minesweeper/MineSweeper1Page";
 
 const px2rem = px2remTransformer({
   rootValue: 10, // 32px = 1rem; @default 16
@@ -35,6 +37,11 @@ function App() {
                   <Route path="/todo/redux" element={<TodoReduxPage />} />
                   <Route path="/tetris" element={<TetrisListPage />} />
                   <Route path="/tetris/1" element={<Tetris1Page />} />
+                  <Route
+                    path="/minesweeper"
+                    element={<MineSweeperListPage />}
+                  />
+                  <Route path="/minesweeper/1" element={<MineSweeper1Page />} />
                   <Route path="/resume" element={<ResumePage />} />
                 </Routes>
               </MainLayout>

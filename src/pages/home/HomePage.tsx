@@ -56,11 +56,11 @@ const todoList = [
         isCompleted: true,
       },
       {
-        text: "mobx 으로 구현",
-        isCompleted: false,
+        text: "zustand 으로 구현",
+        isCompleted: true,
       },
       {
-        text: "zustand 으로 구현",
+        text: "mobx 으로 구현",
         isCompleted: false,
       },
     ],
