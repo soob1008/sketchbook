@@ -145,7 +145,7 @@ const ResumePage = () => {
             </Row>
             <Divider />
             <Row style={{ marginTop: "20px" }}>
-              <Col lg={12} xs={24}>
+              <Col lg={11} xs={24}>
                 <Text strong>
                   m-sync <span>(1년 10개월)</span>
                 </Text>
@@ -153,7 +153,7 @@ const ResumePage = () => {
                   2020.07 - 2022.04
                 </Text>
               </Col>
-              <Col lg={12} xs={24}>
+              <Col lg={13} xs={24}>
                 <Space direction="vertical">
                   <div>
                     <b>미래엔 웹 리뉴얼</b>
