@@ -18,6 +18,7 @@ import MineSweeperListPage from "./pages/minesweeper/MineSweeperListPage";
 import MineSweeper1Page from "./pages/minesweeper/MineSweeper1Page";
 import { reduxStore } from "@components/todo/redux/store";
 import TodoZustandPage from "./pages/todo/TodoZustandPage";
+import * as process from "process";
 
 const px2rem = px2remTransformer({
   rootValue: 10, // 32px = 1rem; @default 16
@@ -30,7 +31,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <Provider store={reduxStore}>
             <Global styles={GlobalStyled} />
-            <BrowserRouter>
+            <BrowserRouter basename={process.env.PUBLIC_URL}>
               <MainLayout>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
