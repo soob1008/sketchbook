@@ -17,7 +17,7 @@ const todoList = [
       },
       {
         text: "로직 정리",
-        isCompleted: false,
+        isCompleted: true,
       },
       {
         text: "초기화면 만들기",
@@ -43,6 +43,10 @@ const todoList = [
     data: [
       {
         text: "기본 로직",
+        isCompleted: false,
+      },
+      {
+        text: "로직 정리",
         isCompleted: false,
       },
     ],

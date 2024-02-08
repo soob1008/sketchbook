@@ -15,7 +15,7 @@ const TodoListPage = () => {
           key: "todo_redux",
           title: "리덕스 툴킷을 이용한 todo",
           link: "/todo/redux",
-          skill: ["redux tookit"],
+          skill: ["redux toolkit"],
           date: "2024-01-20",
         },
       ]}
