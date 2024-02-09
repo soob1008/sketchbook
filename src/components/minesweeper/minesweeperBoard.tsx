@@ -1,7 +1,7 @@
 import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
-import { SmileOutlined, BugOutlined } from "@ant-design/icons";
+import { SmileOutlined, BugOutlined, FlagFilled } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -43,7 +43,12 @@ const getMinePosition = () => {
   while (mineArr.length < MINE_COUNT) {
     const x = Math.floor(Math.random() * COL_LENGTH);
     const y = Math.floor(Math.random() * ROW_LENGTH);
-    if (!mineArr.includes([x, y])) {
+
+    const included = mineArr.some(
+      (minePos) => JSON.stringify(minePos) === JSON.stringify([x, y]),
+    );
+
+    if (!included) {
       mineArr.push([x, y]);
     }
   }
@@ -185,19 +190,23 @@ const MineSweeperBoard = () => {
       </MineSweeperInfo>
       {board.map((row, rowIndex) => (
         <Row key={`mine-row-${rowIndex}`}>
-          {row.map((cell, cellIndex) => (
-            <Cell
-              key={`block-${cellIndex}`}
-              type={cell.type as MineType}
-              mineCount={cell.mineCount}
-              onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
-            >
-              {cell.mineCount > 0 && cell.mineCount}
-              {(cell.type === "mine" || cell.type === "explodedMine") && (
-                <BugOutlined />
-              )}
-            </Cell>
-          ))}
+          {row.map((cell, cellIndex) => {
+            const { type, mineCount } = cell;
+
+            return (
+              <Cell
+                key={`block-${cellIndex}`}
+                type={cell.type as MineType}
+                mineCount={mineCount}
+                onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
+              >
+                {mineCount > 0 && mineCount}
+                {type === "mine" ||
+                  (type === "explodedMine" && <BugOutlined />)}
+                {type === "flag" || (type === "explodedFlag" && <FlagFilled />)}
+              </Cell>
+            );
+          })}
         </Row>
       ))}
     </MineSweeperWrapper>
@@ -210,7 +219,7 @@ const MineSweeperWrapper = styled("div")`
   display: inline-block;
   padding: 20px;
   border-radius: 10px;
-  background-color: #c2c6ff;
+  background-color: #c2d5ff;
 `;
 
 const MineSweeperInfo = styled(Flex)`
@@ -224,7 +233,7 @@ const Row = styled("div")(() => ({
 const getBlockColor = (type: MineType) => {
   switch (type) {
     case "inVisible":
-      return "#260059";
+      return "#031349";
     case "visible":
     case "mine":
       return "#e2e2e2";
