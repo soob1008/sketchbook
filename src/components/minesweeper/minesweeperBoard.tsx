@@ -1,7 +1,7 @@
 import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
-import { SmileOutlined, BugOutlined, FlagFilled } from "@ant-design/icons";
+import { SmileOutlined, BugOutlined, FlagOutlined } from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -95,6 +95,7 @@ const createMineBoard = () => {
 const MineSweeperBoard = () => {
   const [board, setBoard] = useState(createMineBoard());
   const newBoard = board.map((row) => [...row]);
+  const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
 
   const setMineBlockToBoard = (x: number, y: number, block: MineBlock) => {
     newBoard[y][x] = block;
@@ -102,6 +103,8 @@ const MineSweeperBoard = () => {
     setBoard(newBoard);
   };
   const onClickBlock = (event: MouseEvent, x: number, y: number) => {
+    event.preventDefault();
+
     // 왼쪽 마우스 눌렀을 때
     if (event.button === 0) {
       // 누른 곳이 지뢰면, -> isMine 1, mineCount 0, isOpen 1 - explodedMine
@@ -121,7 +124,19 @@ const MineSweeperBoard = () => {
       }
     }
 
+    console.log("event", event.button);
+
     // 오른쪽 마우스를 눌렀을 때 깃발을 놓는다.
+    if (event.button === 2) {
+      if (remainFlag > 0) {
+        setMineBlockToBoard(x, y, {
+          ...board[y][x],
+          type: "flag",
+        });
+
+        setRemainFlag((prev) => prev - 1);
+      }
+    }
   };
 
   const getMineCount = (x: number, y: number) => {
@@ -180,7 +195,7 @@ const MineSweeperBoard = () => {
     <MineSweeperWrapper>
       <Title level={3}>Minesweeper</Title>
       <MineSweeperInfo justify="space-evenly" align="center">
-        <span className="count">10</span>
+        <span className="count">{remainFlag}</span>
         <Button>
           <SmileOutlined />
           {/*<FrownOutlined />*/}
@@ -199,11 +214,15 @@ const MineSweeperBoard = () => {
                 type={cell.type as MineType}
                 mineCount={mineCount}
                 onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
+                onContextMenu={(e) => onClickBlock(e, cellIndex, rowIndex)}
               >
                 {mineCount > 0 && mineCount}
-                {type === "mine" ||
-                  (type === "explodedMine" && <BugOutlined />)}
-                {type === "flag" || (type === "explodedFlag" && <FlagFilled />)}
+                {(type === "mine" || type === "explodedMine") && (
+                  <BugOutlined />
+                )}
+                {(type === "flag" || type === "explodedFlag") && (
+                  <FlagOutlined />
+                )}
               </Cell>
             );
           })}
