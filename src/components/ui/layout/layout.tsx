@@ -69,7 +69,7 @@ const MainLayout = ({ children }: LayoutProps) => {
 
   return (
     <Layout style={{ overflow: "hidden", height: "100vh" }}>
-      <Layout style={{ height: "100%", backgroundColor: "pink" }}>
+      <Layout style={{ height: "100%" }}>
         <NavSideBar
           width={260}
           breakpoint="lg"

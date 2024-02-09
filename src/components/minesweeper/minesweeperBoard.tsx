@@ -1,7 +1,12 @@
 import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
-import { SmileOutlined, BugOutlined, FlagOutlined } from "@ant-design/icons";
+import {
+  SmileOutlined,
+  BugOutlined,
+  FlagOutlined,
+  FrownOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -96,7 +101,7 @@ const MineSweeperBoard = () => {
   const [board, setBoard] = useState(createMineBoard());
   const newBoard = board.map((row) => [...row]);
   const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
-
+  const [isGameOver, setIsGameOver] = useState(false);
   const setMineBlockToBoard = (x: number, y: number, block: MineBlock) => {
     newBoard[y][x] = block;
 
@@ -117,24 +122,30 @@ const MineSweeperBoard = () => {
         });
 
         // 게임 오버
-        return false;
+        setIsGameOver(true);
       } else {
         // 누른 곳이 지뢰가 아니면, 주변에 지뢰가 있는지 검사한다. 지뢰가 없으면 오픈 -  openBlock();
         openBlock(x, y);
       }
     }
 
-    console.log("event", event.button);
-
     // 오른쪽 마우스를 눌렀을 때 깃발을 놓는다.
     if (event.button === 2) {
-      if (remainFlag > 0) {
+      if (remainFlag > 0 && board[y][x].type === "inVisible") {
         setMineBlockToBoard(x, y, {
           ...board[y][x],
           type: "flag",
         });
-
         setRemainFlag((prev) => prev - 1);
+      }
+
+      if (board[y][x].type === "flag") {
+        setMineBlockToBoard(x, y, {
+          ...board[y][x],
+          type: "inVisible",
+        });
+
+        setRemainFlag((prev) => prev + 1);
       }
     }
   };
@@ -197,7 +208,8 @@ const MineSweeperBoard = () => {
       <MineSweeperInfo justify="space-evenly" align="center">
         <span className="count">{remainFlag}</span>
         <Button>
-          <SmileOutlined />
+          {isGameOver ? <FrownOutlined /> : <SmileOutlined />}
+
           {/*<FrownOutlined />*/}
           {/*<SunOutlined />*/}
         </Button>
@@ -235,6 +247,8 @@ const MineSweeperBoard = () => {
 export default MineSweeperBoard;
 
 const MineSweeperWrapper = styled("div")`
+  overflow: hidden;
+  position: relative;
   display: inline-block;
   padding: 20px;
   border-radius: 10px;
