@@ -171,7 +171,7 @@ const ResumePage = () => {
                     <b>동원몰 앱 개발</b>
                     <ul>
                       <li>- UI, 애니메이션 구현</li>
-                      <li>- 마이페이티 API 연동</li>
+                      <li>- 마이페이지 API 연동</li>
                       <li>
                         <a
                           href="https://play.google.com/store/apps/details?id=com.dongwon.mall"

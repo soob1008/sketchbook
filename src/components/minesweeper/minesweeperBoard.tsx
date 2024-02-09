@@ -1,7 +1,9 @@
 import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
-import { Button, Flex } from "antd";
-import { SmileOutlined, BugOutlined } from "@ant-design/icons";
+import { Button, Flex, Typography } from "antd";
+import { SmileOutlined, BugOutlined, FlagOutlined } from "@ant-design/icons";
+
+const { Title } = Typography;
 
 const ROW_LENGTH = 9;
 const COL_LENGTH = 9;
@@ -15,10 +17,22 @@ type MineType =
   | "flag"
   | "explodedFlag";
 
+const AROUND_POSITIONS = [
+  [-1, -1],
+  [0, -1],
+  [1, -1],
+  [-1, 0],
+  [1, 0],
+  [-1, 1],
+  [0, 1],
+  [1, 1],
+];
+
 interface MineBlock {
+  type: MineType;
   isMine: boolean;
   isOpen: boolean;
-  MineCount: number | null;
+  mineCount: number;
 }
 
 // 지뢰 좌표 생성함수
@@ -29,7 +43,12 @@ const getMinePosition = () => {
   while (mineArr.length < MINE_COUNT) {
     const x = Math.floor(Math.random() * COL_LENGTH);
     const y = Math.floor(Math.random() * ROW_LENGTH);
-    if (!mineArr.includes([x, y])) {
+
+    const included = mineArr.some(
+      (minePos) => JSON.stringify(minePos) === JSON.stringify([x, y]),
+    );
+
+    if (!included) {
       mineArr.push([x, y]);
     }
   }
@@ -46,8 +65,9 @@ const createMineBoard = () => {
         .fill({} as MineBlock)
         .map((_: MineBlock, colIndex) => ({
           type: "inVisible",
-          mine: false,
-          value: null,
+          isOpen: false,
+          isMine: false,
+          mineCount: 0,
         })),
   );
 
@@ -62,7 +82,7 @@ const createMineBoard = () => {
         if (x === cellIndex && y === rowIndex) {
           initBoardArray[rowIndex][cellIndex] = {
             ...initBoardArray[rowIndex][cellIndex],
-            mine: true,
+            isMine: true,
           };
         }
       }
@@ -74,60 +94,108 @@ const createMineBoard = () => {
 
 const MineSweeperBoard = () => {
   const [board, setBoard] = useState(createMineBoard());
-  console.log(board);
+  const newBoard = board.map((row) => [...row]);
+  const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
 
+  const setMineBlockToBoard = (x: number, y: number, block: MineBlock) => {
+    newBoard[y][x] = block;
+
+    setBoard(newBoard);
+  };
   const onClickBlock = (event: MouseEvent, x: number, y: number) => {
+    event.preventDefault();
+
     // 왼쪽 마우스 눌렀을 때
     if (event.button === 0) {
       // 누른 곳이 지뢰면, -> isMine 1, mineCount 0, isOpen 1 - explodedMine
-      // 누른 곳이 지뢰가 아니면, 주변에 지뢰가 있는지 검사한다. openBlock();
+      if (board[y][x].isMine) {
+        console.log("x, y", x, y);
+
+        setMineBlockToBoard(x, y, {
+          ...board[y][x],
+          type: "explodedMine",
+        });
+
+        // 게임 오버
+        return false;
+      } else {
+        // 누른 곳이 지뢰가 아니면, 주변에 지뢰가 있는지 검사한다. 지뢰가 없으면 오픈 -  openBlock();
+        openBlock(x, y);
+      }
+    }
+
+    console.log("event", event.button);
+
+    // 오른쪽 마우스를 눌렀을 때 깃발을 놓는다.
+    if (event.button === 2) {
+      if (remainFlag > 0) {
+        setMineBlockToBoard(x, y, {
+          ...board[y][x],
+          type: "flag",
+        });
+
+        setRemainFlag((prev) => prev - 1);
+      }
     }
   };
-  function getBombCount(x: number, y: number): number {
-    // TODO: implementation
-    return 0;
-  }
 
-  const setBombCountToBoard = (x: number, y: number, bombCount: number) => {
-    // TODO: implementation
+  const getMineCount = (x: number, y: number) => {
+    let count = 0;
+
+    for (let pos of AROUND_POSITIONS) {
+      const [posX, posY] = pos;
+
+      if (
+        x + posX >= 0 &&
+        y + posY >= 0 &&
+        y + posY < ROW_LENGTH &&
+        x + posX < COL_LENGTH
+      ) {
+        if (board[y + posY][x + posX].isMine) count++;
+      }
+    }
+
+    return count;
   };
 
   const openBlock = (x: number, y: number) => {
     // x, y 값이 0 보다 작거나 maxLength 보다 크면 종료.
-    // if(isOpen) return;
+    if (
+      x < 0 ||
+      y < 0 ||
+      x >= COL_LENGTH ||
+      y >= ROW_LENGTH ||
+      newBoard[y][x].isOpen
+    )
+      return false;
 
-    // 1. 주변의 지뢰 개수를 구한다.
-    const bombCount = getBombCount(x, y);
+    // 1. 주변의 지뢰 개수를 구한다.// 주변에 지뢰가 있는 경우,
+    const mineCount = getMineCount(x, y);
 
-    // 주변에 지뢰가 있는 경우,
-    if (bombCount > 0) {
-      setBombCountToBoard(x, y, bombCount);
-      // isMine false, mineCount > 0, isOpen true -> visible,  MineCount 에 넣어준다.
-      return;
+    setMineBlockToBoard(x, y, {
+      type: "visible",
+      isOpen: true,
+      isMine: false,
+      mineCount,
+    });
+
+    // 주변에 지뢰가 없으면 주변 블록 열기
+    if (mineCount === 0) {
+      for (let pos of AROUND_POSITIONS) {
+        const [posX, posY] = pos;
+
+        if (x + posX >= 0 && y + posY >= 0) {
+          openBlock(x + posX, y + posY);
+        }
+      }
     }
-
-    // 지뢰가 없는 경우, 주변에 지뢰가 있는지 검사한다.
-    if (bombCount === 0) {
-      // isMine false , isOpen true, bombCount === 0 -> visible, MineCount 0
-
-      openBlock(x - 1, y - 1);
-      openBlock(x - 1, y - 1);
-      openBlock(x, y - 1);
-      openBlock(x - 1, y);
-      openBlock(x + 1, y);
-      openBlock(x - 1, y + 1);
-      openBlock(x, y + 1);
-      openBlock(x + 1, y + 1);
-    }
-
-    // 있으면, 지뢰 개수  넣어주고 종료
-    // 없으면, x, y-1 주변에 지뢰가 있는 지 검사
   };
 
   return (
-    <>
+    <MineSweeperWrapper>
+      <Title level={3}>Minesweeper</Title>
       <MineSweeperInfo justify="space-evenly" align="center">
-        <span className="count">10</span>
+        <span className="count">{remainFlag}</span>
         <Button>
           <SmileOutlined />
           {/*<FrownOutlined />*/}
@@ -137,25 +205,41 @@ const MineSweeperBoard = () => {
       </MineSweeperInfo>
       {board.map((row, rowIndex) => (
         <Row key={`mine-row-${rowIndex}`}>
-          {row.map((cell, cellIndex) => (
-            <Cell
-              key={`block-${cellIndex}`}
-              type={cell.type as MineType}
-              value={cell.value}
-              // onClick={(e) => onClickBlock(e, cell as MineBlock)}
-            >
-              {(cell.type === "mine" || cell.type === "explodedMine") && (
-                <BugOutlined />
-              )}
-            </Cell>
-          ))}
+          {row.map((cell, cellIndex) => {
+            const { type, mineCount } = cell;
+
+            return (
+              <Cell
+                key={`block-${cellIndex}`}
+                type={cell.type as MineType}
+                mineCount={mineCount}
+                onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
+                onContextMenu={(e) => onClickBlock(e, cellIndex, rowIndex)}
+              >
+                {mineCount > 0 && mineCount}
+                {(type === "mine" || type === "explodedMine") && (
+                  <BugOutlined />
+                )}
+                {(type === "flag" || type === "explodedFlag") && (
+                  <FlagOutlined />
+                )}
+              </Cell>
+            );
+          })}
         </Row>
       ))}
-    </>
+    </MineSweeperWrapper>
   );
 };
 
 export default MineSweeperBoard;
+
+const MineSweeperWrapper = styled("div")`
+  display: inline-block;
+  padding: 20px;
+  border-radius: 10px;
+  background-color: #c2d5ff;
+`;
 
 const MineSweeperInfo = styled(Flex)`
   margin-bottom: 20px;
@@ -168,7 +252,7 @@ const Row = styled("div")(() => ({
 const getBlockColor = (type: MineType) => {
   switch (type) {
     case "inVisible":
-      return "#260059";
+      return "#031349";
     case "visible":
     case "mine":
       return "#e2e2e2";
@@ -180,8 +264,8 @@ const getBlockColor = (type: MineType) => {
   }
 };
 
-const Cell = styled("span")<{ type: MineType; value?: number | null }>(
-  ({ type, value }) => ({
+const Cell = styled("span")<{ type: MineType; mineCount?: number | null }>(
+  ({ type, mineCount }) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
