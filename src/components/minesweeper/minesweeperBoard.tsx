@@ -1,7 +1,12 @@
 import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
-import { SmileOutlined, BugOutlined, FlagOutlined } from "@ant-design/icons";
+import {
+  SmileOutlined,
+  BugOutlined,
+  FlagOutlined,
+  FrownOutlined,
+} from "@ant-design/icons";
 
 const { Title } = Typography;
 
@@ -96,7 +101,7 @@ const MineSweeperBoard = () => {
   const [board, setBoard] = useState(createMineBoard());
   const newBoard = board.map((row) => [...row]);
   const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
-
+  const [isGameOver, setIsGameOver] = useState(false);
   const setMineBlockToBoard = (x: number, y: number, block: MineBlock) => {
     newBoard[y][x] = block;
 
@@ -109,34 +114,43 @@ const MineSweeperBoard = () => {
     if (event.button === 0) {
       // 누른 곳이 지뢰면, -> isMine 1, mineCount 0, isOpen 1 - explodedMine
       if (board[y][x].isMine) {
-        console.log("x, y", x, y);
-
         setMineBlockToBoard(x, y, {
           ...board[y][x],
           type: "explodedMine",
         });
 
-        // 게임 오버
-        return false;
+        setIsGameOver(true);
       } else {
         // 누른 곳이 지뢰가 아니면, 주변에 지뢰가 있는지 검사한다. 지뢰가 없으면 오픈 -  openBlock();
         openBlock(x, y);
       }
     }
 
-    console.log("event", event.button);
-
     // 오른쪽 마우스를 눌렀을 때 깃발을 놓는다.
-    if (event.button === 2) {
-      if (remainFlag > 0) {
+    if (!isGameOver && event.button === 2) {
+      if (remainFlag > 0 && board[y][x].type === "inVisible") {
         setMineBlockToBoard(x, y, {
           ...board[y][x],
           type: "flag",
         });
-
         setRemainFlag((prev) => prev - 1);
       }
+
+      if (board[y][x].type === "flag") {
+        setMineBlockToBoard(x, y, {
+          ...board[y][x],
+          type: "inVisible",
+        });
+
+        setRemainFlag((prev) => prev + 1);
+      }
     }
+  };
+
+  const onClickStart = () => {
+    setBoard(createMineBoard());
+    setRemainFlag(MINE_COUNT);
+    setIsGameOver(false);
   };
 
   const getMineCount = (x: number, y: number) => {
@@ -165,7 +179,8 @@ const MineSweeperBoard = () => {
       y < 0 ||
       x >= COL_LENGTH ||
       y >= ROW_LENGTH ||
-      newBoard[y][x].isOpen
+      newBoard[y][x].isOpen ||
+      newBoard[y][x].type === "flag"
     )
       return false;
 
@@ -196,9 +211,11 @@ const MineSweeperBoard = () => {
       <Title level={3}>Minesweeper</Title>
       <MineSweeperInfo justify="space-evenly" align="center">
         <span className="count">{remainFlag}</span>
-        <Button>
-          <SmileOutlined />
-          {/*<FrownOutlined />*/}
+        <Button
+          onClick={onClickStart}
+          style={{ height: "40px", fontSize: "20px" }}
+        >
+          {isGameOver ? <FrownOutlined /> : <SmileOutlined />}
           {/*<SunOutlined />*/}
         </Button>
         <span className="time">10:00</span>
@@ -211,10 +228,11 @@ const MineSweeperBoard = () => {
             return (
               <Cell
                 key={`block-${cellIndex}`}
-                type={cell.type as MineType}
+                blockType={cell.type as MineType}
                 mineCount={mineCount}
                 onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
                 onContextMenu={(e) => onClickBlock(e, cellIndex, rowIndex)}
+                disabled={isGameOver}
               >
                 {mineCount > 0 && mineCount}
                 {(type === "mine" || type === "explodedMine") && (
@@ -235,6 +253,8 @@ const MineSweeperBoard = () => {
 export default MineSweeperBoard;
 
 const MineSweeperWrapper = styled("div")`
+  overflow: hidden;
+  position: relative;
   display: inline-block;
   padding: 20px;
   border-radius: 10px;
@@ -264,16 +284,18 @@ const getBlockColor = (type: MineType) => {
   }
 };
 
-const Cell = styled("span")<{ type: MineType; mineCount?: number | null }>(
-  ({ type, mineCount }) => ({
-    display: "flex",
-    alignItems: "center",
-    justifyContent: "center",
-    width: "35px",
-    height: "35px",
-    backgroundColor: getBlockColor(type),
-    margin: "1px",
-    cursor: "pointer",
-    borderRadius: "3px",
-  }),
-);
+const Cell = styled("button")<{
+  blockType: MineType;
+  mineCount?: number | null;
+}>(({ blockType, mineCount }) => ({
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  width: "35px",
+  height: "35px",
+  backgroundColor: getBlockColor(blockType),
+  margin: "1px",
+  borderRadius: "3px",
+  outline: "none",
+  border: "none",
+}));
