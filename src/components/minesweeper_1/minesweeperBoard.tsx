@@ -145,9 +145,7 @@ const MineSweeperBoard = () => {
     () => {
       setTime(time + 1);
     },
-    checkGameOver(board) === "FAIL" || checkGameOver(board) === "SUCCESS"
-      ? null
-      : 1000,
+    gameStatus === "FAIL" || gameStatus === "SUCCESS" ? null : 1000,
   );
 
   const onClickBlock = (event: MouseEvent, x: number, y: number) => {
@@ -189,7 +187,7 @@ const MineSweeperBoard = () => {
 
     // 게임 성공, 실패, 게임중 처리
     const status = checkGameOver(newBoard);
-    setGameStatus(gameStatus);
+    setGameStatus(status);
 
     setBoard(newBoard);
   };
