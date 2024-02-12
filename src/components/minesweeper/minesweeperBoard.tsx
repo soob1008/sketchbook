@@ -34,6 +34,8 @@ const AROUND_POSITIONS = [
   [1, 1],
 ];
 
+type GameStatus = "FAIL" | "CONTINUE" | "SUCCESS";
+
 interface MineBlock {
   type: MineType;
   isMine: boolean;
@@ -101,8 +103,7 @@ const createMineBoard = (): MineBlock[][] => {
 const MineSweeperBoard = () => {
   const [board, setBoard] = useState<MineBlock[][]>(createMineBoard());
   const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
-  const [isGameOver, setIsGameOver] = useState(false);
-  const [isGameSuccess, setIsGameSuccess] = useState(false);
+  const [gameStatus, setGameStatus] = useState<GameStatus>("CONTINUE");
   const setMineBlockToBoard = (
     newBoard: MineBlock[][],
     x: number,
@@ -135,7 +136,7 @@ const MineSweeperBoard = () => {
 
   const onClickBlock = (event: MouseEvent, x: number, y: number) => {
     event.preventDefault();
-    if (isGameOver) return;
+    if (gameStatus === "FAIL") return;
     if (board[y][x].isOpen) return;
     const newBoard = board.map((row) => [...row]);
 
@@ -152,21 +153,15 @@ const MineSweeperBoard = () => {
         // 누른 곳이 지뢰가 아니면, 주변에 지뢰가 있는지 검사한다. 지뢰가 없으면 오픈 -  openBlock();
         openBlock(newBoard, x, y);
       }
-    }
-
-    // 오른쪽 마우스를 눌렀을 때 깃발을 놓는다.
-    else if (event.button === 2) {
+    } else if (event.button === 2) {
       if (remainFlag > 0 && newBoard[y][x].type === "inVisible") {
-        console.log(newBoard[y][x]);
         setMineBlockToBoard(newBoard, x, y, {
           ...newBoard[y][x],
           type: "flag",
         });
 
         setRemainFlag((prev) => prev - 1);
-      }
-
-      if (newBoard[y][x].type === "flag") {
+      } else if (newBoard[y][x].type === "flag") {
         setMineBlockToBoard(newBoard, x, y, {
           ...newBoard[y][x],
           type: "inVisible",
@@ -177,28 +172,15 @@ const MineSweeperBoard = () => {
     }
 
     // 게임 성공, 실패, 게임중 처리
-    const gameStatus = checkGameOver(newBoard);
-
-    if (gameStatus === "FAIL") {
-      setIsGameOver(true);
-    }
-
-    if (gameStatus === "SUCCESS") {
-      setIsGameSuccess(true);
-    }
+    setGameStatus(checkGameOver(newBoard));
 
     setBoard(newBoard);
-    // 왼쪽, 오른쪽 마우스를 동시에 클릭하면
-    // 주변 블럭 중 열리지 않은 블럭 중에 지뢰가 있으면 깜빡거리고,
-    // 지뢰가 없으면 오픈한다.
-    // 블럭 중에 깃발이 있는 경우 - 깃발이 잘못 세워져 있으면 게임오버시킨다. -> 모든 지뢰를 오픈 시키고 게임오버 / 깃발이 올바르게 세워져 있으면 깃발은 제외하여 검사
   };
 
   const onClickStart = () => {
     setBoard(createMineBoard());
     setRemainFlag(MINE_COUNT);
-    setIsGameOver(false);
-    setIsGameSuccess(false);
+    setGameStatus("CONTINUE");
   };
 
   const getMineCount = (board: MineBlock[][], x: number, y: number) => {
@@ -259,14 +241,15 @@ const MineSweeperBoard = () => {
       <Title level={3}>Minesweeper</Title>
       <MineSweeperInfo justify="space-evenly" align="center">
         <span className="count">{remainFlag}</span>
-        <Button
+        <MineButton
           onClick={onClickStart}
           style={{ height: "40px", fontSize: "20px" }}
+          gameStatus={gameStatus}
         >
-          {isGameOver && <FrownOutlined />}
-          {isGameSuccess && <LikeOutlined />}
-          {!isGameOver && !isGameSuccess && <SmileOutlined />}
-        </Button>
+          {gameStatus === "FAIL" && <FrownOutlined />}
+          {gameStatus === "CONTINUE" && <SmileOutlined />}
+          {gameStatus === "SUCCESS" && <LikeOutlined />}
+        </MineButton>
         <span className="time">10:00</span>
       </MineSweeperInfo>
       {board.map((row, rowIndex) => (
@@ -281,7 +264,6 @@ const MineSweeperBoard = () => {
                 mineCount={mineCount}
                 onClick={(e) => onClickBlock(e, cellIndex, rowIndex)}
                 onContextMenu={(e) => onClickBlock(e, cellIndex, rowIndex)}
-                disabled={isGameOver || isGameSuccess}
               >
                 {mineCount > 0 && mineCount}
                 {(type === "mine" || type === "explodedMine") && (
@@ -333,6 +315,24 @@ const getBlockColor = (type: MineType) => {
   }
 };
 
+const getMineButtonColor = (status: GameStatus) => {
+  switch (status) {
+    case "FAIL":
+      return {
+        backgroundColor: "#eeff1f",
+      };
+    case "CONTINUE":
+      return {
+        backgroundColor: "#ffffff",
+      };
+    case "SUCCESS":
+      return {
+        backgroundColor: "#0072ff",
+        color: "#ffffff",
+      };
+  }
+};
+
 const Cell = styled("button")<{
   blockType: MineType;
   mineCount?: number | null;
@@ -348,3 +348,9 @@ const Cell = styled("button")<{
   outline: "none",
   border: "none",
 }));
+
+const MineButton = styled(Button)<{ gameStatus: GameStatus }>(
+  ({ gameStatus }) => ({
+    ...getMineButtonColor(gameStatus),
+  }),
+);
