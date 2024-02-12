@@ -42,19 +42,15 @@ const todoList = [
     href: "minesweeper",
     data: [
       {
-        text: "게임 성공 처리",
-        isCompleted: false,
-      },
-      {
-        text: "게임 타이머",
-        isCompleted: false,
+        text: "기본 로직",
+        isCompleted: true,
       },
       {
         text: "구현한 로직 정리",
         isCompleted: false,
       },
       {
-        text: "마우스 동시 클릭 시 블럭 검사",
+        text: "처음 클릭시 지뢰 안나오도록 처리",
         isCompleted: false,
       },
     ],

@@ -1,4 +1,4 @@
-import { useState, MouseEvent } from "react";
+import { useState, MouseEvent, useEffect, useRef } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
 import {
@@ -8,6 +8,11 @@ import {
   FrownOutlined,
   LikeOutlined,
 } from "@ant-design/icons";
+import useInterval from "@hooks/useInterval";
+import dayjs from "dayjs";
+import duration from "dayjs/plugin/duration";
+
+dayjs.extend(duration);
 
 const { Title } = Typography;
 
@@ -104,6 +109,8 @@ const MineSweeperBoard = () => {
   const [board, setBoard] = useState<MineBlock[][]>(createMineBoard());
   const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
   const [gameStatus, setGameStatus] = useState<GameStatus>("CONTINUE");
+  const [time, setTime] = useState(0);
+
   const setMineBlockToBoard = (
     newBoard: MineBlock[][],
     x: number,
@@ -133,6 +140,13 @@ const MineSweeperBoard = () => {
 
     return "SUCCESS";
   };
+
+  useInterval(
+    () => {
+      setTime(time + 1);
+    },
+    gameStatus === "FAIL" || gameStatus === "SUCCESS" ? null : 1000,
+  );
 
   const onClickBlock = (event: MouseEvent, x: number, y: number) => {
     event.preventDefault();
@@ -172,7 +186,8 @@ const MineSweeperBoard = () => {
     }
 
     // 게임 성공, 실패, 게임중 처리
-    setGameStatus(checkGameOver(newBoard));
+    const status = checkGameOver(newBoard);
+    setGameStatus(status);
 
     setBoard(newBoard);
   };
@@ -181,6 +196,7 @@ const MineSweeperBoard = () => {
     setBoard(createMineBoard());
     setRemainFlag(MINE_COUNT);
     setGameStatus("CONTINUE");
+    setTime(0);
   };
 
   const getMineCount = (board: MineBlock[][], x: number, y: number) => {
@@ -250,7 +266,9 @@ const MineSweeperBoard = () => {
           {gameStatus === "CONTINUE" && <SmileOutlined />}
           {gameStatus === "SUCCESS" && <LikeOutlined />}
         </MineButton>
-        <span className="time">10:00</span>
+        <span className="time">
+          {dayjs.duration(time, "seconds").format("HH:mm:ss")}
+        </span>
       </MineSweeperInfo>
       {board.map((row, rowIndex) => (
         <Row key={`mine-row-${rowIndex}`}>
