@@ -1,4 +1,4 @@
-import { useState, MouseEvent, useEffect, useRef } from "react";
+import { useState, MouseEvent } from "react";
 import styled from "@emotion/styled";
 import { Button, Flex, Typography } from "antd";
 import {
@@ -11,35 +11,18 @@ import {
 import useInterval from "@hooks/useInterval";
 import dayjs from "dayjs";
 import duration from "dayjs/plugin/duration";
+import {
+  AROUND_POSITIONS,
+  COL_LENGTH,
+  GameStatus,
+  MINE_COUNT,
+  MineType,
+  ROW_LENGTH,
+} from "@components/minesweeper_1/util";
 
 dayjs.extend(duration);
 
 const { Title } = Typography;
-
-const ROW_LENGTH = 9;
-const COL_LENGTH = 9;
-const MINE_COUNT = 10;
-
-type MineType =
-  | "inVisible"
-  | "visible"
-  | "mine"
-  | "explodedMine"
-  | "flag"
-  | "explodedFlag";
-
-const AROUND_POSITIONS = [
-  [-1, -1],
-  [0, -1],
-  [1, -1],
-  [-1, 0],
-  [1, 0],
-  [-1, 1],
-  [0, 1],
-  [1, 1],
-];
-
-type GameStatus = "FAIL" | "CONTINUE" | "SUCCESS";
 
 interface MineBlock {
   type: MineType;
