@@ -1,4 +1,4 @@
-import Board from "../../components/tetris/board";
+import Board from "@components/tetris_1/board";
 
 import { Col, Row } from "antd";
 
