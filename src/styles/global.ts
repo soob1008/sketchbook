@@ -35,4 +35,10 @@ export const GlobalStyled = css`
     padding: 0;
     list-style: none;
   }
+  button {
+    padding: 0;
+    outline: none;
+    border: none;
+    cursor: pointer;
+  }
 `;

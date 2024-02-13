@@ -1,19 +1,65 @@
 import { Col, Row, Slider, Flex, Typography, Select, Button } from "antd";
-import { useState } from "react";
-import { Note, NOTES } from "@components/piano/util";
+import { MouseEvent, useState } from "react";
+import { createNote, Note, PIANO_KEYS } from "@components/piano/util";
 import styled from "@emotion/styled";
 
 const { Text } = Typography;
 
 const Piano = () => {
   const [volume, setVolume] = useState(0.5);
-  const audioContext = new AudioContext();
+  // 현재 재생 중인 음을 담는 배열
+  const [oscList, setOscList] = useState<number[]>([]);
 
-  console.log("audio", audioContext);
-
-  console.log("creat notes", NOTES);
+  const audioContext: AudioContext = new AudioContext();
+  let mainGainNode: GainNode;
   const onChange = (newValue: number) => {
     setVolume(newValue);
+  };
+
+  const initPiano = () => {
+    mainGainNode = audioContext.createGain();
+    mainGainNode.gain.value = volume;
+
+    // mainGainNode.connect(audioContext.destination);
+  };
+
+  const getOscNode = (freq: number) => {
+    let oscillator: OscillatorNode = audioContext.createOscillator();
+
+    // oscillator.type = "sine"; default : sine
+    // OscillatorNode.setPeriodicWave(PeriodicWave) 메서드 -> 원하는 파형을 가진 소리를 만들 수 있다.
+
+    oscillator.frequency.value = freq;
+
+    oscillator.connect(mainGainNode).connect(audioContext.destination);
+
+    // oscillator.start(); // 디폴트로 주파수 440 Hz인 sine 파의 음을 출력
+    console.log("osc", oscillator);
+
+    return oscillator;
+  };
+
+  initPiano();
+
+  const onClickPlayPiano = async (
+    event: MouseEvent,
+    major: string,
+    freq: number,
+  ) => {
+    const osc = getOscNode(freq);
+    // console.log(audioContext.state);
+    await audioContext.resume();
+    osc.start();
+  };
+
+  const onPressNote = (event: MouseEvent, major: string, freq: number) => {
+    const osc = getOscNode(freq);
+
+    osc.start();
+  };
+
+  const onLeaveNote = (event: MouseEvent, major: string, freq: number) => {
+    const osc = getOscNode(freq);
   };
 
   return (
@@ -46,20 +92,16 @@ const Piano = () => {
         </Col>
       </Row>
       <Row>
-        {/*   건반 그리기 - 흰 건반, 검은 건반 구분해서 그려야 한다.*/}
         <PianoKeyboard>
-          {NOTES.map((notes: Note[], index) => (
-            <>
-              {notes.map((note: Note) => (
-                <PianoKeyWhite>
-                  {note.sharp && <PianoKeyBlack />}
-                  <span className="major">
-                    {note.major}
-                    {index}
-                  </span>
-                </PianoKeyWhite>
-              ))}
-            </>
+          {PIANO_KEYS.map((note) => (
+            <button className={note.name.includes("#") ? "black" : "white"}>
+              {!note.name.includes("#") && (
+                <span className="note">
+                  {note.name}
+                  {note.octave}
+                </span>
+              )}
+            </button>
           ))}
         </PianoKeyboard>
       </Row>
@@ -70,25 +112,49 @@ const Piano = () => {
 export default Piano;
 
 const PianoKeyboard = styled("div")`
+  overflow: hidden;
   display: flex;
   margin-top: 50px;
-  border: 1px solid red;
+  padding: 10px;
+  background-color: #000000;
+  border-radius: 10px;
+
+  button {
+    position: relative;
+    font-size: 10px;
+    .note {
+      position: absolute;
+      left: 50%;
+      bottom: 3px;
+      transform: translateX(-50%);
+      font-size: 10px;
+    }
+  }
+
+  .white {
+    width: 30px;
+    height: 100px;
+    background-color: #ffffff;
+    border-left: 1px solid #e2e2e2;
+  }
+  .black {
+    position: relative;
+    z-index: 10;
+    display: block;
+    margin: 0 -7px;
+    width: 14px;
+    height: 60px;
+    background-color: #000000;
+    border-radius: 0 0 2px 2px;
+  }
 `;
 
-const PianoKeyWhite = styled("div")(() => ({
+const PianoKeyItem = styled("button")(() => ({
   position: "relative",
-  width: "20px",
+  width: "30px",
   height: "100px",
   backgroundColor: "white",
   borderRight: "1px solid #e2e2e2",
-  ".major": {
-    position: "absolute",
-    bottom: "5px",
-    left: "50%",
-    transform: "translateX(-50%)",
-    fontSize: "10px",
-    fontWeight: 700,
-  },
 }));
 
 const PianoKeyBlack = styled("div")(() => ({
