@@ -20,7 +20,7 @@ https://velog.io/@soob1008/react-%ED%85%8C%ED%8A%B8%EB%A6%AC%EC%8A%A4-%EB%A7%8C%
 
 ## 지뢰찾기
 
-개발 중.
+https://velog.io/@soob1008/%EC%A7%80%EB%A2%B0%EC%B0%BE%EA%B8%B0
 
 ## Todo
 
