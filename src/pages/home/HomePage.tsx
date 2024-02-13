@@ -74,6 +74,28 @@ const todoList = [
     ],
   },
   {
+    title: "피아노 연주",
+    href: "piano",
+    data: [
+      {
+        text: "악보 데이터",
+        isCompleted: false,
+      },
+      {
+        text: "피아노 건반 그리기",
+        isCompleted: false,
+      },
+      {
+        text: "연주 구현",
+        isCompleted: false,
+      },
+      {
+        text: "악보 직접 등록 - 서버 연동",
+        isCompleted: false,
+      },
+    ],
+  },
+  {
     title: "채팅 구현",
     href: "chat",
     data: [

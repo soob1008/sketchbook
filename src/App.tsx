@@ -19,6 +19,7 @@ import MineSweeper1Page from "./pages/minesweeper/MineSweeper1Page";
 import { reduxStore } from "@components/todo/redux/store";
 import TodoZustandPage from "./pages/todo/TodoZustandPage";
 import * as process from "process";
+import PianoPage from "@pages/piano/PianoPage";
 
 const px2rem = px2remTransformer({
   rootValue: 10, // 32px = 1rem; @default 16
@@ -45,6 +46,7 @@ function App() {
                     element={<MineSweeperListPage />}
                   />
                   <Route path="/minesweeper/1" element={<MineSweeper1Page />} />
+                  <Route path="/piano" element={<PianoPage />} />
                   <Route path="/resume" element={<ResumePage />} />
                 </Routes>
               </MainLayout>

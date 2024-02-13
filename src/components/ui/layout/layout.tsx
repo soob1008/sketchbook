@@ -38,6 +38,7 @@ function getItem(
 const menuItems: MenuItem[] = [
   getItem("laboratory", "laboratory", <CodeOutlined />, [
     getItem("todo", "todo"),
+    getItem("piano", "piano"),
   ]),
   getItem("game", "game", <RocketOutlined />, [
     getItem("테트리스", "tetris"),

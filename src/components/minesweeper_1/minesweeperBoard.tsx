@@ -89,7 +89,7 @@ const createMineBoard = (): MineBlock[][] => {
 };
 
 const MineSweeperBoard = () => {
-  const [board, setBoard] = useState<MineBlock[][]>(createMineBoard());
+  const [board, setBoard] = useState<MineBlock[][]>(() => createMineBoard());
   const [remainFlag, setRemainFlag] = useState(MINE_COUNT);
   const [gameStatus, setGameStatus] = useState<GameStatus>("CONTINUE");
   const [time, setTime] = useState(0);
