@@ -47,7 +47,7 @@ const todoList = [
       },
       {
         text: "구현한 로직 정리",
-        isCompleted: false,
+        isCompleted: true,
       },
       {
         text: "처음 클릭시 지뢰 안나오도록 처리",
@@ -78,11 +78,15 @@ const todoList = [
     href: "piano",
     data: [
       {
-        text: "악보 데이터",
+        text: "피아노 건반 그리기",
+        isCompleted: true,
+      },
+      {
+        text: "피아노 건반 소리 나오게 하기",
         isCompleted: false,
       },
       {
-        text: "피아노 건반 그리기",
+        text: "악보 데이터",
         isCompleted: false,
       },
       {

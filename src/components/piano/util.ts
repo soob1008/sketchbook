@@ -24,17 +24,17 @@ const NOTES = ["c", "c#", "d", "d#", "e", "f", "f#", "g", "g#", "a", "a#", "b"];
 export const createNote = () => {
   let pianoKeys: PianoKey[] = [];
 
-  for (let ova = 0; ova < 9; ova++) {
+  for (let octave = 0; octave < 9; octave++) {
     for (let i in NOTES) {
       const noteIndex = Number(i);
 
-      if ((ova === 0 && noteIndex < 9) || (ova === 8 && noteIndex > 0))
+      if ((octave === 0 && noteIndex < 9) || (octave === 8 && noteIndex > 0))
         continue;
 
       pianoKeys.push({
         name: NOTES[i] as Note,
-        octave: ova,
-        freq: Math.pow(2, ova - 1) * 55 * Math.pow(2, (noteIndex - 10) / 12),
+        octave,
+        freq: Math.pow(2, octave - 1) * 55 * Math.pow(2, (noteIndex - 10) / 12),
       });
     }
   }

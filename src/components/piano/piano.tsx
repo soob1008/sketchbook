@@ -1,65 +1,57 @@
 import { Col, Row, Slider, Flex, Typography, Select, Button } from "antd";
-import { MouseEvent, useState } from "react";
+import { useState } from "react";
 import { createNote, Note, PIANO_KEYS } from "@components/piano/util";
 import styled from "@emotion/styled";
+
+// 파일 분리
+declare global {
+  interface Window {
+    AudioContext: typeof AudioContext;
+    webkitAudioContext: typeof AudioContext;
+  }
+}
 
 const { Text } = Typography;
 
 const Piano = () => {
   const [volume, setVolume] = useState(0.5);
-  // 현재 재생 중인 음을 담는 배열
-  const [oscList, setOscList] = useState<number[]>([]);
 
-  const audioContext: AudioContext = new AudioContext();
-  let mainGainNode: GainNode;
+  const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+  let mainGainNode = audioContext.createGain();
+
+  console.log(audioContext);
+
   const onChange = (newValue: number) => {
     setVolume(newValue);
   };
 
-  const initPiano = () => {
-    mainGainNode = audioContext.createGain();
+  const playPino = (freq: number) => {
+    const osc: OscillatorNode = audioContext.createOscillator();
+
     mainGainNode.gain.value = volume;
+    mainGainNode.connect(audioContext.destination);
 
-    // mainGainNode.connect(audioContext.destination);
-  };
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, audioContext.currentTime); // 예시로 440Hz (라 음)
+    mainGainNode.gain.setValueAtTime(0.5, audioContext.currentTime);
 
-  const getOscNode = (freq: number) => {
-    let oscillator: OscillatorNode = audioContext.createOscillator();
-
-    // oscillator.type = "sine"; default : sine
-    // OscillatorNode.setPeriodicWave(PeriodicWave) 메서드 -> 원하는 파형을 가진 소리를 만들 수 있다.
-
-    oscillator.frequency.value = freq;
-
-    oscillator.connect(mainGainNode).connect(audioContext.destination);
-
-    // oscillator.start(); // 디폴트로 주파수 440 Hz인 sine 파의 음을 출력
-    console.log("osc", oscillator);
-
-    return oscillator;
-  };
-
-  initPiano();
-
-  const onClickPlayPiano = async (
-    event: MouseEvent,
-    major: string,
-    freq: number,
-  ) => {
-    const osc = getOscNode(freq);
-    // console.log(audioContext.state);
-    await audioContext.resume();
-    osc.start();
-  };
-
-  const onPressNote = (event: MouseEvent, major: string, freq: number) => {
-    const osc = getOscNode(freq);
+    osc.connect(mainGainNode).connect(audioContext.destination);
 
     osc.start();
+
+    return osc;
   };
 
-  const onLeaveNote = (event: MouseEvent, major: string, freq: number) => {
-    const osc = getOscNode(freq);
+  const onPressNote = (freq: number) => {
+    const osc = playPino(freq);
+
+    audioContext.resume().then(() => {
+      osc.stop(audioContext.currentTime + 0.3);
+    });
+  };
+
+  const onLeaveNote = (freq: number) => {
+    // audioContext.suspend().then(() => {});
   };
 
   return (
@@ -94,7 +86,11 @@ const Piano = () => {
       <Row>
         <PianoKeyboard>
           {PIANO_KEYS.map((note) => (
-            <button className={note.name.includes("#") ? "black" : "white"}>
+            <button
+              className={note.name.includes("#") ? "black" : "white"}
+              onMouseDown={() => onPressNote(note.freq)}
+              onMouseUp={() => onLeaveNote(note.freq)}
+            >
               {!note.name.includes("#") && (
                 <span className="note">
                   {note.name}
@@ -136,33 +132,21 @@ const PianoKeyboard = styled("div")`
     height: 100px;
     background-color: #ffffff;
     border-left: 1px solid #e2e2e2;
+    &:active {
+      background-color: dodgerblue;
+    }
   }
   .black {
     position: relative;
     z-index: 10;
     display: block;
-    margin: 0 -7px;
+    margin: 0 -5px;
     width: 14px;
     height: 60px;
     background-color: #000000;
     border-radius: 0 0 2px 2px;
+    &:active {
+      background-color: red;
+    }
   }
 `;
-
-const PianoKeyItem = styled("button")(() => ({
-  position: "relative",
-  width: "30px",
-  height: "100px",
-  backgroundColor: "white",
-  borderRight: "1px solid #e2e2e2",
-}));
-
-const PianoKeyBlack = styled("div")(() => ({
-  position: "absolute",
-  zIndex: 10,
-  top: 0,
-  right: "-6px",
-  width: "12px",
-  height: "60px",
-  backgroundColor: "black",
-}));
