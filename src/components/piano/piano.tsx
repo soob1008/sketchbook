@@ -8,6 +8,7 @@ const { Text } = Typography;
 
 const Piano = () => {
   const [volume, setVolume] = useState(0.5);
+  const [currentFreq, setCurrentFreq] = useState(0);
   const [selectedSong, setSelectedSong] = useState("");
   const audioContext = useRef(
     new (window.AudioContext || window.webkitAudioContext)(),
@@ -82,14 +83,17 @@ const Piano = () => {
     for (let song of songs) {
       for (let note of song) {
         const { freq } = PIANO_KEYS.find(
-          (key) => key.name === note.pitch && key.octave === note.octave,
+          (key) => key.pitch === note.pitch && key.octave === note.octave,
         ) || { freq: 0 };
 
         const duration = getDuration(note.duration as Duration);
 
+        setCurrentFreq(freq);
         await onPressNote(freq, duration);
       }
     }
+
+    setCurrentFreq(0);
   };
 
   const getSongOptions = () => {
@@ -101,6 +105,8 @@ const Piano = () => {
   const onSelectSong = (option: HTMLSelectElement) => {
     setSelectedSong(String(option));
   };
+
+  console.log(currentFreq);
 
   return (
     <div>
@@ -132,17 +138,18 @@ const Piano = () => {
       <Row>
         <PianoKeyboard>
           {PIANO_KEYS.map((note) => (
-            <button
-              className={note.name.includes("#") ? "black" : "white"}
+            <PianoKey
+              className={note.pitch.includes("#") ? "black" : "white"}
               onClick={() => onPressNote(note.freq)}
+              isActive={note.freq === currentFreq}
             >
-              {!note.name.includes("#") && (
+              {!note.pitch.includes("#") && (
                 <span className="note">
-                  {note.name}
+                  {note.pitch}
                   {note.octave}
                 </span>
               )}
-            </button>
+            </PianoKey>
           ))}
         </PianoKeyboard>
       </Row>
@@ -159,39 +166,40 @@ const PianoKeyboard = styled("div")`
   padding: 10px;
   background-color: #000000;
   border-radius: 10px;
-
-  button {
-    position: relative;
-    font-size: 10px;
-    .note {
-      position: absolute;
-      left: 50%;
-      bottom: 3px;
-      transform: translateX(-50%);
-      font-size: 10px;
-    }
-  }
-
-  .white {
-    width: 32px;
-    height: 100px;
-    background-color: #ffffff;
-    border-left: 1px solid #e2e2e2;
-    &:active {
-      background-color: dodgerblue;
-    }
-  }
-  .black {
-    position: relative;
-    z-index: 10;
-    display: block;
-    margin: 0 -7px;
-    width: 20px;
-    height: 60px;
-    background-color: #000000;
-    border-radius: 0 0 2px 2px;
-    &:active {
-      background-color: red;
-    }
-  }
 `;
+
+const PianoKey = styled("button")<{ isActive: boolean }>(({ isActive }) => ({
+  position: "relative",
+  fontSize: "10px",
+  ".note": {
+    position: "absolute",
+    left: "50%",
+    bottom: "3px",
+    transform: "translateX(-50%)",
+    fontSize: "10px",
+  },
+
+  "&.white": {
+    width: "32px",
+    height: "100px",
+    backgroundColor: isActive ? "dodgerblue" : "#ffffff",
+    borderLeft: "1px solid #e2e2e2",
+    "&:active": {
+      backgroundColor: "dodgerblue",
+    },
+  },
+  "&.black": {
+    position: "relative",
+    zIndex: 10,
+    display: "block",
+    margin: "0 -7px",
+    width: "20px",
+    height: "60px",
+    backgroundColor: isActive ? "red" : "#000000",
+
+    borderRadius: "0 0 2px 2px",
+    "&:active": {
+      backgroundColor: "red",
+    },
+  },
+}));

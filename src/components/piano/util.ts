@@ -1,6 +1,4 @@
-import { SONGS } from "../../data/piano";
-
-export type Note =
+export type Pitch =
   | "c"
   | "c#"
   | "d"
@@ -17,7 +15,7 @@ export type Note =
 export type Duration = "eight" | "quarter" | "half" | "whole";
 
 export interface PianoKey {
-  name: Note;
+  pitch: Pitch;
   octave: number;
   freq: number;
 }
@@ -36,7 +34,7 @@ export const createNote = () => {
         continue;
 
       pianoKeys.push({
-        name: NOTES[i] as Note,
+        pitch: NOTES[i] as Pitch,
         octave,
         freq: Math.pow(2, octave - 1) * 55 * Math.pow(2, (noteIndex - 10) / 12),
       });
