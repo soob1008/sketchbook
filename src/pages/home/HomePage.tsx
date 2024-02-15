@@ -83,18 +83,26 @@ const todoList = [
       },
       {
         text: "피아노 건반 소리 나오게 하기",
-        isCompleted: false,
+        isCompleted: true,
       },
       {
-        text: "악보 데이터",
-        isCompleted: false,
+        text: "악보 테스트 데이터 넣기",
+        isCompleted: true,
       },
       {
         text: "연주 구현",
         isCompleted: false,
       },
       {
-        text: "악보 직접 등록 - 서버 연동",
+        text: "볼륨 조절",
+        isCompleted: false,
+      },
+      {
+        text: "악보 등록 UI",
+        isCompleted: false,
+      },
+      {
+        text: "악보 등록 서버 연동",
         isCompleted: false,
       },
     ],
