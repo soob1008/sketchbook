@@ -1,103 +1,258 @@
 /*
  * 악보 샘플 작성
- * 도: C 레: D 미: E 파: F 솔: G 라: A 시: B
+ * 도: c 레: d 미: e 파: f 솔: g 라: a 시: b
  * */
 
-export const pianoItems = [
+export const SONGS = [
   {
+    id: "watch",
     title: "할아버지의 시계",
-    tempo: 120,
     keySignature: "C Major",
     timeSignature: "4/4",
     score: [
       {
         measure: 1,
-        notes: {
-          right: [
-            { pitch: "G4", duration: "half" },
-            { pitch: "G4", duration: "half" },
-          ],
-          left: [{ pitch: "G3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "g", octave: 4, duration: "half" },
+          { pitch: "g", octave: 4, duration: "half" },
+        ],
       },
       {
         measure: 2,
-        notes: {
-          right: [
-            { pitch: "C5", duration: "half" },
-            { pitch: "B4", duration: "quarter" },
-            { pitch: "C5", duration: "quarter" },
-          ],
-          left: [{ pitch: "C3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "c", octave: 5, duration: "half" },
+          { pitch: "b", octave: 4, duration: "quarter" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+        ],
       },
       {
         measure: 3,
-        notes: {
-          right: [
-            { pitch: "D5", duration: "half" },
-            { pitch: "C5", duration: "quarter" },
-            { pitch: "D5", duration: "quarter" },
-          ],
-          left: [{ pitch: "G3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "d", octave: 5, duration: "half" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+        ],
       },
       {
         measure: 4,
-        notes: {
-          right: [
-            { pitch: "E5", duration: "quarter" },
-            { pitch: "E5", duration: "quarter" },
-            { pitch: "F5", duration: "quarter" },
-            { pitch: "E5", duration: "quarter" },
-          ],
-          left: [{ pitch: "E3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "e", octave: 5, duration: "quarter" },
+          { pitch: "e", octave: 5, duration: "quarter" },
+          { pitch: "f", octave: 5, duration: "quarter" },
+          { pitch: "e", octave: 5, duration: "quarter" },
+        ],
       },
       {
         measure: 5,
-        notes: {
-          right: [
-            { pitch: "A4", duration: "half" },
-            { pitch: "D5", duration: "quarter" },
-            { pitch: "D5", duration: "quarter" },
-          ],
-          left: [{ pitch: "E3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "a", octave: 4, duration: "half" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+        ],
       },
       {
         measure: 6,
-        notes: {
-          right: [
-            { pitch: "C5", duration: "half" },
-            { pitch: "C5", duration: "quarter" },
-            { pitch: "C5", duration: "quarter" },
-          ],
-          left: [{ pitch: "G3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "c", octave: 5, duration: "half" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+        ],
       },
       {
         measure: 7,
-        notes: {
-          right: [
-            { pitch: "B4", duration: "half" },
-            { pitch: "A4", duration: "quarter" },
-            { pitch: "B4", duration: "quarter" },
-          ],
-          left: [{ pitch: "G3", duration: "whole" }],
-        },
+        notes: [
+          { pitch: "b", octave: 4, duration: "half" },
+          { pitch: "a", octave: 4, duration: "quarter" },
+          { pitch: "b", octave: 4, duration: "quarter" },
+        ],
       },
       {
         measure: 8,
-        notes: {
-          right: [
-            {
-              pitch: "C5",
-              duration: "whole",
-            },
-          ],
-          left: [{ pitch: "C3", duration: "whole" }],
-        },
+        notes: [
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "whole",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "happyBirthday",
+    title: "생일 축하합니다",
+    keySignature: "C Major",
+    timeSignature: "4/3",
+    score: [
+      {
+        measure: 1,
+        notes: [
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+        ],
+      },
+      {
+        measure: 2,
+        notes: [
+          {
+            pitch: "a",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "quarter",
+          },
+        ],
+      },
+      {
+        measure: 3,
+        notes: [
+          {
+            pitch: "b",
+            octave: 4,
+            duration: "half",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+        ],
+      },
+      {
+        measure: 4,
+        notes: [
+          {
+            pitch: "a",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "d",
+            octave: 5,
+            duration: "quarter",
+          },
+        ],
+      },
+      {
+        measure: 5,
+        notes: [
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "half",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+          {
+            pitch: "g",
+            octave: 4,
+            duration: "eight",
+          },
+        ],
+      },
+      {
+        measure: 6,
+        notes: [
+          {
+            pitch: "g",
+            octave: 5,
+            duration: "quarter",
+          },
+          {
+            pitch: "e",
+            octave: 5,
+            duration: "quarter",
+          },
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "quarter",
+          },
+        ],
+      },
+      {
+        measure: 7,
+        notes: [
+          {
+            pitch: "b",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "a",
+            octave: 4,
+            duration: "quarter",
+          },
+          {
+            pitch: "f",
+            octave: 5,
+            duration: "eight",
+          },
+          {
+            pitch: "f",
+            octave: 5,
+            duration: "eight",
+          },
+        ],
+      },
+      {
+        measure: 8,
+        notes: [
+          {
+            pitch: "e",
+            octave: 5,
+            duration: "quarter",
+          },
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "quarter",
+          },
+          {
+            pitch: "d",
+            octave: 5,
+            duration: "quarter",
+          },
+        ],
+      },
+      {
+        measure: 9,
+        notes: [
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "half",
+          },
+        ],
       },
     ],
   },

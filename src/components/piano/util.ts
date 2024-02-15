@@ -1,3 +1,5 @@
+import { SONGS } from "../../data/piano";
+
 export type Note =
   | "c"
   | "c#"
@@ -11,6 +13,8 @@ export type Note =
   | "a"
   | "a#"
   | "b";
+
+export type Duration = "eight" | "quarter" | "half" | "whole";
 
 export interface PianoKey {
   name: Note;
@@ -43,3 +47,16 @@ export const createNote = () => {
 };
 
 export const PIANO_KEYS = createNote();
+
+export const getDuration = (type: Duration) => {
+  switch (type) {
+    case "eight":
+      return 0.3;
+    case "quarter":
+      return 0.5;
+    case "half":
+      return 0.8;
+    case "whole":
+      return 1;
+  }
+};
