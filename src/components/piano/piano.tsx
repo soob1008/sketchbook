@@ -1,34 +1,24 @@
-import { Col, Row, Slider, Flex, Typography, Select, Button } from "antd";
+import { Col, Row, Slider, Flex, Select, Button } from "antd";
 import { useRef, useState } from "react";
 import { Duration, getDuration, PIANO_KEYS } from "@components/piano/util";
 import styled from "@emotion/styled";
 import { SONGS } from "../../data/piano";
-
-const { Text } = Typography;
+import { AudioOutlined, AudioMutedOutlined } from "@ant-design/icons";
 
 const Piano = () => {
   const [volume, setVolume] = useState(0.5);
+  const [prevVolume, setPrevVolume] = useState(0);
   const [currentFreq, setCurrentFreq] = useState(0);
   const [selectedSong, setSelectedSong] = useState("");
+
   const audioContext = useRef(
     new (window.AudioContext || window.webkitAudioContext)(),
   ).current;
+  const gainNode = useRef(audioContext.createGain()).current;
 
-  const onChange = (newValue: number) => {
-    setVolume(newValue);
-  };
-
-  const playPiano = (freq: number) => {
+  const playPianoTone = (freq: number) => {
+    if (volume < 0) return;
     const osc: OscillatorNode = audioContext.createOscillator();
-    const mainGainNode = audioContext.createGain();
-
-    mainGainNode.gain.value = 0; // 초기 음량은 0으로 설정
-    mainGainNode.connect(audioContext.destination);
-
-    osc.type = "sine"; // 오실레이터 파형 설정
-    osc.frequency.setValueAtTime(freq, audioContext.currentTime);
-
-    osc.connect(mainGainNode);
 
     // Attack-Decay-Sustain-Release (ADSR) envelope 적용
     const attackTime = 0.01; // Attack 시간 (초)
@@ -39,43 +29,49 @@ const Piano = () => {
     const now = audioContext.currentTime;
 
     // Attack
-    mainGainNode.gain.setValueAtTime(0, now);
-    mainGainNode.gain.linearRampToValueAtTime(1, now + attackTime);
+    gainNode.gain.setValueAtTime(0, now);
+    gainNode.gain.linearRampToValueAtTime(volume, now + attackTime);
 
     // Decay
-    mainGainNode.gain.linearRampToValueAtTime(
-      sustainLevel,
+    gainNode.gain.linearRampToValueAtTime(
+      volume * sustainLevel,
       now + attackTime + decayTime,
     );
 
     // Sustain (유지)
-    mainGainNode.gain.setValueAtTime(
-      sustainLevel,
+    gainNode.gain.setValueAtTime(
+      volume * sustainLevel,
       now + attackTime + decayTime,
     );
 
     // Release
-    mainGainNode.gain.linearRampToValueAtTime(
+    gainNode.gain.linearRampToValueAtTime(
       0,
       now + attackTime + decayTime + releaseTime,
     );
 
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(freq, audioContext.currentTime);
+
+    gainNode.connect(audioContext.destination);
+
+    osc.connect(gainNode);
+
     osc.start();
-    osc.stop(now + attackTime + decayTime + releaseTime); // 소리가 끝나는 시점을 설정
+    osc.stop(now + attackTime + decayTime + releaseTime);
 
     return osc;
   };
 
   const onPressNote = async (freq: number, duration?: number) => {
-    const osc = playPiano(freq);
+    playPianoTone(freq);
     const time = duration ? duration : 0.3;
 
     await audioContext.resume();
     await new Promise((resolve) => setTimeout(resolve, time * 1000));
-    osc.stop(audioContext.currentTime + time);
   };
 
-  const onPlaySong = async () => {
+  const onAutoPlaySong = async () => {
     const currentSong = SONGS.filter((song) => song.id === selectedSong)[0];
 
     const songs = currentSong.score.map((notes) => notes.notes);
@@ -106,18 +102,32 @@ const Piano = () => {
     setSelectedSong(String(option));
   };
 
-  console.log(currentFreq);
+  const onChangeVolume = (volume: number) => {
+    setVolume(volume);
+  };
+
+  const onClickVolume = () => {
+    if (volume > 0) {
+      setVolume(0);
+      setPrevVolume(volume);
+    } else {
+      setVolume(prevVolume);
+    }
+  };
 
   return (
-    <div>
+    <>
       <Row>
         <Col span={4}>
           <Flex align="center">
-            <Text>볼륨</Text>
+            <button style={{ marginRight: 5 }} onClick={onClickVolume}>
+              {volume > 0 ? <AudioOutlined /> : <AudioMutedOutlined />}
+            </button>
             <Slider
               min={0}
               max={1}
-              onChange={onChange}
+              step={0.1}
+              onChange={onChangeVolume}
               value={volume}
               style={{ width: "100px", marginLeft: "20px" }}
             />
@@ -131,7 +141,7 @@ const Piano = () => {
               style={{ width: "200px", marginRight: "10px" }}
               onChange={onSelectSong}
             />
-            <Button onClick={onPlaySong}>연주 시작</Button>
+            <Button onClick={onAutoPlaySong}>연주 시작</Button>
           </Flex>
         </Col>
       </Row>
@@ -153,7 +163,7 @@ const Piano = () => {
           ))}
         </PianoKeyboard>
       </Row>
-    </div>
+    </>
   );
 };
 
