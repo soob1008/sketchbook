@@ -5,80 +5,6 @@
 
 export const SONGS = [
   {
-    id: "watch",
-    title: "할아버지의 시계",
-    keySignature: "C Major",
-    timeSignature: "4/4",
-    score: [
-      {
-        measure: 1,
-        notes: [
-          { pitch: "g", octave: 4, duration: "half" },
-          { pitch: "g", octave: 4, duration: "half" },
-        ],
-      },
-      {
-        measure: 2,
-        notes: [
-          { pitch: "c", octave: 5, duration: "half" },
-          { pitch: "b", octave: 4, duration: "quarter" },
-          { pitch: "c", octave: 5, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 3,
-        notes: [
-          { pitch: "d", octave: 5, duration: "half" },
-          { pitch: "c", octave: 5, duration: "quarter" },
-          { pitch: "d", octave: 5, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 4,
-        notes: [
-          { pitch: "e", octave: 5, duration: "quarter" },
-          { pitch: "e", octave: 5, duration: "quarter" },
-          { pitch: "f", octave: 5, duration: "quarter" },
-          { pitch: "e", octave: 5, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 5,
-        notes: [
-          { pitch: "a", octave: 4, duration: "half" },
-          { pitch: "d", octave: 5, duration: "quarter" },
-          { pitch: "d", octave: 5, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 6,
-        notes: [
-          { pitch: "c", octave: 5, duration: "half" },
-          { pitch: "c", octave: 5, duration: "quarter" },
-          { pitch: "c", octave: 5, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 7,
-        notes: [
-          { pitch: "b", octave: 4, duration: "half" },
-          { pitch: "a", octave: 4, duration: "quarter" },
-          { pitch: "b", octave: 4, duration: "quarter" },
-        ],
-      },
-      {
-        measure: 8,
-        notes: [
-          {
-            pitch: "c",
-            octave: 5,
-            duration: "whole",
-          },
-        ],
-      },
-    ],
-  },
-  {
     id: "happyBirthday",
     title: "생일 축하합니다",
     keySignature: "C Major",
@@ -251,6 +177,80 @@ export const SONGS = [
             pitch: "c",
             octave: 5,
             duration: "half",
+          },
+        ],
+      },
+    ],
+  },
+  {
+    id: "watch",
+    title: "할아버지의 낡은 시계",
+    keySignature: "C Major",
+    timeSignature: "4/4",
+    score: [
+      {
+        measure: 1,
+        notes: [
+          { pitch: "g", octave: 4, duration: "half" },
+          { pitch: "g", octave: 4, duration: "half" },
+        ],
+      },
+      {
+        measure: 2,
+        notes: [
+          { pitch: "c", octave: 5, duration: "half" },
+          { pitch: "b", octave: 4, duration: "quarter" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 3,
+        notes: [
+          { pitch: "d", octave: 5, duration: "half" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 4,
+        notes: [
+          { pitch: "e", octave: 5, duration: "quarter" },
+          { pitch: "e", octave: 5, duration: "quarter" },
+          { pitch: "f", octave: 5, duration: "quarter" },
+          { pitch: "e", octave: 5, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 5,
+        notes: [
+          { pitch: "a", octave: 4, duration: "half" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+          { pitch: "d", octave: 5, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 6,
+        notes: [
+          { pitch: "c", octave: 5, duration: "half" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+          { pitch: "c", octave: 5, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 7,
+        notes: [
+          { pitch: "b", octave: 4, duration: "half" },
+          { pitch: "a", octave: 4, duration: "quarter" },
+          { pitch: "b", octave: 4, duration: "quarter" },
+        ],
+      },
+      {
+        measure: 8,
+        notes: [
+          {
+            pitch: "c",
+            octave: 5,
+            duration: "whole",
           },
         ],
       },

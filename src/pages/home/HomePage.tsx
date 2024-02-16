@@ -91,11 +91,11 @@ const todoList = [
       },
       {
         text: "연주 구현",
-        isCompleted: false,
+        isCompleted: true,
       },
       {
         text: "볼륨 조절",
-        isCompleted: false,
+        isCompleted: true,
       },
       {
         text: "악보 등록 UI",

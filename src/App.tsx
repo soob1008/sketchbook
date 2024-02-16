@@ -1,6 +1,6 @@
 import React from "react";
 
-import { BrowserRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes } from "react-router-dom";
 import HomePage from "./pages/home/HomePage";
 import MainLayout from "./components/ui/layout/layout";
 import ResumePage from "./pages/ResumePage";
@@ -18,12 +18,7 @@ import MineSweeperListPage from "./pages/minesweeper/MineSweeperListPage";
 import MineSweeper1Page from "./pages/minesweeper/MineSweeper1Page";
 import { reduxStore } from "@components/todo/redux/store";
 import TodoZustandPage from "./pages/todo/TodoZustandPage";
-import * as process from "process";
 import PianoPage from "@pages/piano/PianoPage";
-
-const px2rem = px2remTransformer({
-  rootValue: 10, // 32px = 1rem; @default 16
-});
 
 function App() {
   return (
@@ -32,7 +27,7 @@ function App() {
         <ThemeProvider theme={theme}>
           <Provider store={reduxStore}>
             <Global styles={GlobalStyled} />
-            <BrowserRouter basename={process.env.PUBLIC_URL}>
+            <HashRouter>
               <MainLayout>
                 <Routes>
                   <Route path="/" element={<HomePage />} />
@@ -50,7 +45,7 @@ function App() {
                   <Route path="/resume" element={<ResumePage />} />
                 </Routes>
               </MainLayout>
-            </BrowserRouter>
+            </HashRouter>
           </Provider>
         </ThemeProvider>
       </StyleProvider>
