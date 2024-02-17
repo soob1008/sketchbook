@@ -105,6 +105,10 @@ const todoList = [
         text: "악보 등록 서버 연동",
         isCompleted: false,
       },
+      {
+        text: "자동 연주 시 볼륨 조절 버그 수정",
+        isCompleted: false,
+      },
     ],
   },
   {
