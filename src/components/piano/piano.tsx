@@ -17,7 +17,7 @@ const Piano = () => {
   const gainNode = useRef(audioContext.createGain()).current;
 
   const playPianoTone = (freq: number) => {
-    if (volume < 0) return;
+    if (volume <= 0) return;
     const osc: OscillatorNode = audioContext.createOscillator();
 
     // Attack-Decay-Sustain-Release (ADSR) envelope 적용
@@ -25,7 +25,6 @@ const Piano = () => {
     const decayTime = 0.1; // Decay 시간 (초)
     const sustainLevel = 0.5; // Sustain 레벨 (0에서 1 사이)
     const releaseTime = 0.5; // Release 시간 (초)
-
     const now = audioContext.currentTime;
 
     // Attack
