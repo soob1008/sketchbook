@@ -37,7 +37,7 @@ export const ROUTES: Route[] = [
     element: TetrisListPage,
   },
   {
-    path: "/tetirs/1",
+    path: "/tetris/1",
     element: Tetris1Page,
   },
   {
