@@ -41,4 +41,7 @@ export const GlobalStyled = css`
     border: none;
     cursor: pointer;
   }
+  a {
+    text-decoration: none;
+  }
 `;
