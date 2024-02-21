@@ -3,9 +3,8 @@ import styled from "@emotion/styled";
 import {
   RocketOutlined,
   CodeOutlined,
-  FileTextOutlined,
   HomeOutlined,
-  MenuOutlined,
+  MobileOutlined,
 } from "@ant-design/icons";
 
 import { Breadcrumb, Button, Layout, Menu, MenuProps, theme, Col } from "antd";
@@ -44,6 +43,7 @@ const menuItems: MenuItem[] = [
     getItem("테트리스", "tetris"),
     getItem("지뢰찾기", "minesweeper"),
   ]),
+  getItem("mobile web", "lab", <MobileOutlined />),
 ];
 
 const MainLayout = ({ children }: LayoutProps) => {
