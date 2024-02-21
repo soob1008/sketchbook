@@ -44,7 +44,6 @@ const menuItems: MenuItem[] = [
     getItem("테트리스", "tetris"),
     getItem("지뢰찾기", "minesweeper"),
   ]),
-  getItem("resume", "resume", <FileTextOutlined />),
 ];
 
 const MainLayout = ({ children }: LayoutProps) => {
