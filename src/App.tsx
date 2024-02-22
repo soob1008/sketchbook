@@ -1,6 +1,5 @@
 import React from "react";
-
-import { BrowserRouter, HashRouter, Route, Routes } from "react-router-dom";
+import { Route, Routes, useLocation } from "react-router-dom";
 import MainLayout from "./components/ui/layout/layout";
 import { ConfigProvider } from "antd";
 import { StyleProvider } from "@ant-design/cssinjs";
@@ -9,19 +8,27 @@ import { Global, ThemeProvider } from "@emotion/react";
 import { GlobalStyled } from "@styles/global";
 import { Provider } from "react-redux";
 import { reduxStore } from "@components/todo/redux/store";
-import { ROUTES } from "./route";
-import MainPage from "@pages/lab/mainPage";
-import DetailPage from "@pages/lab/detailPage";
+import { ROUTES, SERVICE_ROUTES, TRANSITION_ROUTES } from "./route";
+import RouteTransition from "@ui//RouteTransition";
+import styled from "@emotion/styled";
 
 function App() {
+  const location = useLocation();
+
   return (
     <ConfigProvider theme={antdTheme}>
       <StyleProvider>
         <ThemeProvider theme={theme}>
           <Provider store={reduxStore}>
             <Global styles={GlobalStyled} />
-            <HashRouter>
-              <Routes>
+            <RouteTransition
+              pathname={
+                TRANSITION_ROUTES.includes(location.pathname)
+                  ? location.pathname
+                  : null
+              }
+            >
+              <Routes location={location}>
                 {ROUTES.map((route) => (
                   <Route
                     path={route.path}
@@ -32,10 +39,11 @@ function App() {
                     }
                   />
                 ))}
-                <Route path="/lab" element={<MainPage />} />
-                <Route path="/lab/detail" element={<DetailPage />} />
+                {SERVICE_ROUTES.map((route) => (
+                  <Route path={route.path} element={<route.element />} />
+                ))}
               </Routes>
-            </HashRouter>
+            </RouteTransition>
           </Provider>
         </ThemeProvider>
       </StyleProvider>
@@ -44,3 +52,7 @@ function App() {
 }
 
 export default App;
+
+const TransitionRoute = styled(Route)`
+  position: absolute;
+`;

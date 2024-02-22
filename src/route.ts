@@ -9,6 +9,8 @@ import MineSweeperListPage from "@pages/minesweeper/MineSweeperListPage";
 import MineSweeper1Page from "@pages/minesweeper/MineSweeper1Page";
 import PianoPage from "@pages/piano/PianoPage";
 import ResumePage from "@pages/ResumePage";
+import MainPage from "@pages/lab/mainPage";
+import DetailPage from "@pages/lab/detailPage";
 
 interface Route {
   path: string;
@@ -55,5 +57,18 @@ export const ROUTES: Route[] = [
   {
     path: "/resume",
     element: ResumePage,
+  },
+];
+
+export const TRANSITION_ROUTES = ["/lab/detail"];
+
+export const SERVICE_ROUTES = [
+  {
+    path: "/lab",
+    element: MainPage,
+  },
+  {
+    path: "/lab/detail",
+    element: DetailPage,
   },
 ];

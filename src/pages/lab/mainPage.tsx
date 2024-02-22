@@ -4,7 +4,7 @@ import ItemList from "@components/lab/itemList";
 
 const MainPage = () => {
   return (
-    <>
+    <div>
       <Header />
       <main>
         <div style={{ paddingTop: "50px" }}>
@@ -23,7 +23,7 @@ const MainPage = () => {
         </div>
       </main>
       <BottomMenu />
-    </>
+    </div>
   );
 };
 

@@ -43,7 +43,7 @@ const LogoIcon = () => {
       className="css-1qa5cvy"
       xmlns="http://www.w3.org/2000/svg"
       width="74"
-      height="30"
+      height="26"
       fill="none"
       viewBox="0 0 74 30"
     >
