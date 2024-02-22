@@ -25,7 +25,7 @@ const ItemList = () => {
           </span>
           <span className="title">
             영화에 나올 것 같은 <br />
-            부자집
+            부잣집
           </span>
         </Link>
       </Item>
@@ -84,7 +84,7 @@ const Item = styled("li")`
     border: 1px solid #e2e2e2;
     border-radius: 10px;
     img {
-      max-width: 100%;
+      width: 100%;
     }
   }
 `;

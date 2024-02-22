@@ -41,7 +41,40 @@ export const GlobalStyled = css`
     border: none;
     cursor: pointer;
   }
+
   a {
     text-decoration: none;
+  }
+
+  .transition-wrapper {
+    position: relative;
+    overflow: hidden;
+    height: calc(1vh * 100);
+    width: 100vw;
+  }
+
+  .right-enter {
+    transform: translateX(100%);
+  }
+
+  .right-enter-active {
+    z-index: 1;
+    transform: translateX(0);
+    transition: transform 300ms;
+  }
+
+  .right-exit {
+    transform: translateX(-100%);
+  }
+
+  .right-exit-active {
+    transform: translateX(-100%);
+    transition: transform 300ms;
+  }
+
+  .transition-container {
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
   }
 `;
