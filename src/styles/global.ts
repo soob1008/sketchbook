@@ -72,12 +72,6 @@ export const GlobalStyled = css`
     transition: transform 300ms;
   }
 
-  .transitions-wrapper-left > .right-exit-active,
-  .transitions-wrapper-left > .left-exit-active {
-    transform: translateX(100%);
-    transition: transform 300ms ease-out;
-  }
-
   .transition-container {
     position: absolute;
     width: 100vw;
