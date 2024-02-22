@@ -1,0 +1,142 @@
+[
+  {
+    "id": 1,
+    "title": "성수에 비밀스럽게 자리한 건축가들의 아지트",
+    "userName": "saamsoon",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/170280088986301961.jpg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 2,
+    "title": "이태원에 위치한 마블프루트 쇼룸",
+    "userName": "moodindigo",
+    "like": true,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170382232566179329.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 3,
+    "title": "카페 개화기 엔틱 스타일",
+    "userName": "cafelover",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/168446669483638987.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 4,
+    "title": "대구 소품샵 '물비늘'",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/168550971865307968.jpg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 5,
+    "title": "우드와 식물이 가득",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 35,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170075731747534660.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 6,
+    "title": "여유가 흐르는 사랑방의 등장",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 20,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170390385497210777.jpeg?w=512&h=684&c=c",
+    "bookMark": true,
+    "link": ""
+  },
+  {
+    "id": 7,
+    "title": "연희동 귀여운 디저트",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 20,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/170368862679508658.jpeg?w=512&h=684&c=c",
+    "bookMark": true,
+    "link": ""
+  },
+  {
+    "id": 8,
+    "title": "성수에 비밀스럽게 자리한 건축가들의 아지트",
+    "userName": "saamsoon",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/170280088986301961.jpg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 9,
+    "title": "이태원에 위치한 마블프루트 쇼룸",
+    "userName": "moodindigo",
+    "like": true,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170382232566179329.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 10,
+    "title": "카페 개화기 엔틱 스타일",
+    "userName": "cafelover",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/168446669483638987.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 11,
+    "title": "대구 소품샵 '물비늘'",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 6,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/168550971865307968.jpg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 12,
+    "title": "우드와 식물이 가득",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 35,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170075731747534660.jpeg?w=512&h=684&c=c",
+    "bookMark": false,
+    "link": ""
+  },
+  {
+    "id": 13,
+    "title": "여유가 흐르는 사랑방의 등장",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 20,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/snapshots/170390385497210777.jpeg?w=512&h=684&c=c",
+    "bookMark": true,
+    "link": ""
+  },
+  {
+    "id": 14,
+    "title": "연희동 귀여운 디저트",
+    "userName": "lee",
+    "like": false,
+    "likeCount": 20,
+    "thumbnail": "https://image.ohou.se/i/bucketplace-v2-development/uploads/cards/170368862679508658.jpeg?w=512&h=684&c=c",
+    "bookMark": true,
+    "link": ""
+  }
+]

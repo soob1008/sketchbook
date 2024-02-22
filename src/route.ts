@@ -9,8 +9,10 @@ import MineSweeperListPage from "@pages/minesweeper/MineSweeperListPage";
 import MineSweeper1Page from "@pages/minesweeper/MineSweeper1Page";
 import PianoPage from "@pages/piano/PianoPage";
 import ResumePage from "@pages/ResumePage";
-import MainPage from "@pages/lab/mainPage";
-import DetailPage from "@pages/lab/detailPage";
+
+import RecommendPage from "@pages/lab/RecommendPage";
+import MainPage from "@pages/lab/MainPage";
+import DetailPage from "@pages/lab/DetailPage";
 
 interface Route {
   path: string;
@@ -70,5 +72,9 @@ export const SERVICE_ROUTES = [
   {
     path: "/lab/detail",
     element: DetailPage,
+  },
+  {
+    path: "/lab/recommend",
+    element: RecommendPage,
   },
 ];

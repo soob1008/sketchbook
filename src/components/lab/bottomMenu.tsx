@@ -13,22 +13,27 @@ const MENUS = [
   {
     title: "홈",
     icon: <HomeOutlined />,
+    link: "/",
   },
   {
     title: "둘러보기",
     icon: <FileTextOutlined />,
+    link: "/lab/recommend",
   },
   {
     title: "쇼핑",
     icon: <ShopOutlined />,
+    link: "/",
   },
   {
     title: "인테리어/생활",
     icon: <FormatPainterOutlined />,
+    link: "/",
   },
   {
     title: "마이페이지",
     icon: <UserOutlined />,
+    link: "/",
   },
 ];
 
@@ -38,7 +43,7 @@ const BottomMenu = () => {
       <ul>
         {MENUS.map((menu) => (
           <BottomMenuItem>
-            <Link to="/" className="link">
+            <Link to={menu.link} className="link">
               {menu.icon}
               <b>{menu.title}</b>
             </Link>
