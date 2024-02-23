@@ -49,7 +49,6 @@ export const GlobalStyled = css`
   .transition-wrapper {
     position: relative;
     overflow: hidden;
-    min-height: calc(1vh * 100);
     width: 100vw;
   }
 

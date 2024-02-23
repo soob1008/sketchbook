@@ -1,14 +1,18 @@
+import Layout from "@components/lab/layout/Layout";
+
 const DetailPage = () => {
   return (
-    <div className="transition-container">
-      <div
-        style={{
-          width: "100px",
-          height: "100px",
-          backgroundColor: "yellow",
-        }}
-      ></div>
-    </div>
+    <Layout>
+      <div className="transition-container">
+        <div
+          style={{
+            width: "100px",
+            height: "100px",
+            backgroundColor: "yellow",
+          }}
+        ></div>
+      </div>
+    </Layout>
   );
 };
 
