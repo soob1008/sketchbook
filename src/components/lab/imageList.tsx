@@ -1,5 +1,7 @@
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
+import SkeletonImage from "@ui//skeleton/SkeletonImage";
+import { useState } from "react";
 
 export type ImageContent = {
   id: number;
@@ -18,13 +20,26 @@ interface ImageListProps {
 }
 
 const ImageList = ({ lists, imageHeight }: ImageListProps) => {
+  const [isImageLoad, setIsImageLoad] = useState(false);
+  const handleImageLoad = () => {
+    setIsImageLoad(true);
+  };
+
   return (
     <Items>
       {lists.map((list) => (
         <Item key={list.id}>
           <Link to={list.link}>
             <span className="img">
-              <img src={list.thumbnail} alt={list.title} />
+              <img
+                src={list.thumbnail}
+                alt={list.title}
+                onLoad={handleImageLoad}
+                style={{
+                  display: isImageLoad ? "block" : "none",
+                }}
+              />
+              {!isImageLoad && <SkeletonImage />}
             </span>
             <span className="title">{list.title}</span>
           </Link>
@@ -60,10 +75,12 @@ const Item = styled("li")`
   .img {
     overflow: hidden;
     display: block;
+    height: 234px;
     border: 1px solid #e2e2e2;
     border-radius: 10px;
     img {
       width: 100%;
+      height: 100%;
     }
   }
 `;

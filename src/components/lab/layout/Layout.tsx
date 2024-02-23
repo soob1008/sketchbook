@@ -6,7 +6,7 @@ interface LayoutProps {
 
 const Layout = ({ children }: LayoutProps) => {
   return (
-    <main>
+    <main style={{ minHeight: "100vh" }}>
       <div style={{ paddingTop: "50px" }}>
         <div style={{ padding: "30px 12px" }}>{children}</div>
       </div>
